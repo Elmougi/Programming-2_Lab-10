@@ -1,20 +1,25 @@
+package Checker;
 import java.util.*;
 
 public class BoxChecker extends Checker {
-    private int boxIndex;
+    private static BoxChecker instance;
+    private int i;
 
-    public BoxChecker(int[][] board, int boxIndex, List<Violation> violations) {
-        super(board, "BOX", violations);
-        this.boxIndex = boxIndex;
+    private BoxChecker(int[][] board, int i) {
+        super(board);
+        this.i = i;
     }
 
     @Override
-    public void run() {
-        int[] box = extractBox(boxIndex);
-        findAndAddDuplicates(box, boxIndex + 1);
+    public Checker getInstance(int[][] board, int i) {
+        if (instance == null) {
+            instance = new BoxChecker(board, i);
+        }
+
+        return instance;
     }
 
-    private int[] extractBox(int boxIndex) {
+    private int[] collectsInts(int boxIndex) {
         int[] box = new int[9];
         int startRow = (boxIndex / 3) * 3;
         int startCol = (boxIndex % 3) * 3;

@@ -1,3 +1,4 @@
+package Checker;
 import java.util.Set;
 
 public class Violation {
