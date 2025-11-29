@@ -16,23 +16,38 @@ public class Mode27 extends Verifier {
 
     @Override
     public Result verify() {
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             int[] row = RowChecker.collectInts(board, i);
             RowChecker rowChecker = new RowChecker(row, i + 1, true);
-            Thread rowThread = new Thread(rowChecker);
-            rowThread.start();
+            Thread t = new Thread(rowChecker);
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                System.out.println("Interrupt exception catched");
+            }
         }
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             int[] column = ColumnChecker.collectInts(board, i);
             ColumnChecker columnChecker = new ColumnChecker(column, i + 1, true);
-            Thread columnThread = new Thread(columnChecker);
-            columnThread.start();
+            Thread t = new Thread(columnChecker);
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                System.out.println("Interrupt exception catched");
+            }
         }
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             int[] box = BoxChecker.collectsInts(board, i);
             BoxChecker boxChecker = new BoxChecker(box, i + 1, true);
-            Thread boxThread = new Thread(boxChecker);
-            boxThread.start();
+            Thread t = new Thread(boxChecker);
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                System.out.println("Interrupt exception catched");
+            }
         }
 
         return Checker.getResult();
