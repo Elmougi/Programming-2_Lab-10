@@ -49,6 +49,14 @@ public class Mode3 extends Verifier {
         columns.start();
         boxes.start();
 
+        try {
+            rows.join();
+            columns.join();
+            boxes.join();
+        } catch (InterruptedException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
         // no race conditions because each thread will effect a separate list in the
         // Checker class
 

@@ -66,11 +66,12 @@ public class App {
                             System.out.println("Error: Value at [" + row + "," + col + "] must be between 1-9");
                             return null;
                         } else {
+                            grid[row][col] = Integer.parseInt(value);
+                            
                             if (grid[row][col] < 1 || grid[row][col] > 9) {
                                 System.out.println("Error: Value at [" + row + "," + col + "] must be between 1-9");
                                 return null;
                             }
-                            grid[row][col] = Integer.parseInt(value);
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("Error: Invalid number format at row " + (row + 1) + ", column " + (col + 1));
