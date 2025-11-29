@@ -38,8 +38,13 @@ public class BoxChecker extends Checker {
             }
             if (positions.size() > 1) {
                 Violation violation = new Violation('b', num, j, positions);
-                boxViolations.add(violation);
+                addViolation(violation);
             }
         }
+    }
+
+    @Override
+    protected synchronized void addViolation(Violation violation) {
+        boxViolations.add(violation);
     }
 }

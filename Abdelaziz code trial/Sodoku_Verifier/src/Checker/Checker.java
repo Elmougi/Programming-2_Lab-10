@@ -24,6 +24,7 @@ public abstract class Checker implements Runnable {
     }
 
     protected abstract void findViolations(int[] numbers);
+    protected abstract void addViolation(Violation violation); // will be synchronised when overriden
     
     public static Result getResult() {
         return new Result(rowViolations, colViolations, boxViolations);
