@@ -2,7 +2,6 @@ package Checker;
 import java.util.*;
 
 public class ColumnChecker extends Checker {
-    private static ColumnChecker instance;
     private int i;
 
     private ColumnChecker(int[][] board, int i) {
@@ -23,8 +22,13 @@ public class ColumnChecker extends Checker {
     public void run() {
         int[] column = new int[9];
         for (int i = 0; i < 9; i++) {
-            column[i] = board[i][colIndex];
+            column[i] = board[i][i];
         }
-        findViolations(column, colIndex + 1);
+        findViolations(column, i);
+    }
+
+    @Override
+    protected void findViolations(int[] numbers, int index) {
+    
     }
 }

@@ -3,7 +3,6 @@ package Checker;
 import java.util.*;
 
 public class RowChecker extends Checker {
-    private static RowChecker instance;
     private int i;
 
     private RowChecker(int[][] board, int i) {
@@ -28,6 +27,6 @@ public class RowChecker extends Checker {
 
     @Override
     protected void findViolations(int[] numbers, int index) {
-
+        
     }
 }

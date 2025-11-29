@@ -2,7 +2,7 @@ package Checker;
 import java.util.*;
 
 public abstract class Checker implements Runnable {
-    private Checker instance;
+    protected Checker instance;
     protected int[][] board;
     // lists of all violations
     protected List<Violation> rowViolations = new ArrayList<>();

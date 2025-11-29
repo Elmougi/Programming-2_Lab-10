@@ -1,8 +1,8 @@
 package Checker;
+
 import java.util.*;
 
 public class BoxChecker extends Checker {
-    private static BoxChecker instance;
     private int i;
 
     private BoxChecker(int[][] board, int i) {
@@ -31,5 +31,16 @@ public class BoxChecker extends Checker {
             }
         }
         return box;
+    }
+
+    @Override
+    public void run() {
+        int[] box = collectsInts(i);
+        findViolations(box, i);
+    }
+
+    @Override
+    protected void findViolations(int[] numbers, int index) {
+
     }
 }
