@@ -10,7 +10,7 @@ import VerifyModes.Result;
 public class App {
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("Missing input -> write: java -jar <app-name>.jar <.csv filepath> <mode>");
+            System.out.println("Missing input -> write: java -jar app.jar <csv-file> <mode>");
             return;
         }
 

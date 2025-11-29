@@ -16,7 +16,7 @@ public class Mode27 extends Verifier {
 
     @Override
     public Result verify() {
-        // Check rows, columns, boxes sequentially
+        
 
         return Checker.getResult();
     }
