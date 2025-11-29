@@ -4,14 +4,13 @@ import java.util.*;
 
 public class RowChecker extends Checker {
 
-    public RowChecker(int[][] board, int num) {
-        super(board, num);
+    public RowChecker(int[] values, int num) {
+        super(values, num);
     }
 
     @Override
     public void run() {
-        int[] row = board[num - 1];
-        findViolations(row);
+        findViolations(values);
     }
 
     @Override

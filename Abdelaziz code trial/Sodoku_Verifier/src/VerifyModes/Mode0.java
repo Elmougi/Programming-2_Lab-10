@@ -9,8 +9,7 @@ public class Mode0 extends Verifier {
 
     @Override
     public Result verify() {
-        Checker rowChecker = RowChecker.getInstance(board, 1);
-        Checker colChecker = ColumnChecker.getInstance(board, 1);
+        
         
         return result;
     }

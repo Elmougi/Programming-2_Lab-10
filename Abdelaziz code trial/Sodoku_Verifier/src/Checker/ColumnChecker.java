@@ -3,17 +3,22 @@ import java.util.*;
 
 public class ColumnChecker extends Checker {
 
-    public ColumnChecker(int[][] board, int num) {
-        super(board, num);
+    public ColumnChecker(int[] values, int num) {
+        super(values, num);
     }
 
     @Override
     public void run() {
+        
+        findViolations(values);
+    }
+
+    public static int[] collectInts(int[][] board, int colIndex) {    
         int[] column = new int[9];
         for (int i = 0; i < 9; i++) {
-            column[i] = board[i][num-1];
+            column[i] = board[i][colIndex];
         }
-        findViolations(column);
+        return column;
     }
 
     @Override
