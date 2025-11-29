@@ -32,8 +32,13 @@ public class RowChecker extends Checker {
             }
             if (positions.size() > 1) {
                 Violation violation = new Violation('r', num, j, positions);
-                rowViolations.add(violation);
+                addViolation(violation);
             }
         }
+    }
+
+    @Override
+    protected synchronized void addViolation(Violation violation) {
+        rowViolations.add(violation);
     }
 }

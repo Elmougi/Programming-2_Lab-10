@@ -33,7 +33,7 @@ public class Result {
             }
             s.append("----------------------------------------------\n");
             for(Violation c: colViolations){
-                s.append("Column " + c.getIndex() + ", #" + c.getNumber() + ", [" + c.getPositionsString() + "]\n");
+                s.append("Col " + c.getIndex() + ", #" + c.getNumber() + ", [" + c.getPositionsString() + "]\n");
             }
             s.append("----------------------------------------------\n");
             for(Violation b: boxViolations){

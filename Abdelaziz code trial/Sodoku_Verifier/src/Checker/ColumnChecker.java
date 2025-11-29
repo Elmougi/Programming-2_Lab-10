@@ -32,8 +32,13 @@ public class ColumnChecker extends Checker {
             }
             if(positions.size() > 1) {
                 Violation violation = new Violation('c', num, j, positions);
-                colViolations.add(violation);
+                addViolation(violation);
             }
         }
+    }
+
+    @Override
+    protected synchronized void addViolation(Violation violation) {
+        colViolations.add(violation);
     }
 }
