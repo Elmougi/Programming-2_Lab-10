@@ -1,4 +1,4 @@
-import java.util.Arrays;
+package Checkers;
 
 public class ColumnChecker extends Checker
 {

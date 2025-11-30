@@ -1,4 +1,6 @@
-import java.util.*;
+package CheckerFactory;
+
+import Checkers.*;
 
 public class CheckerFactory {
 

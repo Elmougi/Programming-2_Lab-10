@@ -1,12 +1,11 @@
 package Sudoku;
 
 import Checkers.*;
-
+import CheckerFactory.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class SudokuValidator {
 

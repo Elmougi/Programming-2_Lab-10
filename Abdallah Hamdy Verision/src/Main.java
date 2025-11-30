@@ -1,7 +1,9 @@
+import Sudoku.SudokuBoard;
+import Sudoku.SudokuValidator;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-         if (args.length != 2) {
+    public static void main(String[] args) {
+        if (args.length != 2) {
             System.out.println("Usage: java -jar SudokuValidator.jar <csvFilePath> <mode>");
             System.out.println("Modes: 0 = sequential, 3 = 3 threads, 27 = 27 threads");
             return;
@@ -21,8 +23,10 @@ public class Main {
         }
 
         try {
+            // Load board
             SudokuBoard board = new SudokuBoard(csvFilePath);
 
+            // Validate
             SudokuValidator validator = new SudokuValidator(board);
             validator.validate(mode);
 
@@ -32,3 +36,4 @@ public class Main {
         }
     }
 }
+

@@ -1,10 +1,12 @@
+package Checkers;
+
 import java.util.*;
 
 public abstract class Checker implements Runnable
 {
     int id;
     int [] values;
-    list<DuplicateInfo> duplicates;
+    List <DuplicateInfo> duplicates;
 
     public Checker(int id ,int[] values)
     {
