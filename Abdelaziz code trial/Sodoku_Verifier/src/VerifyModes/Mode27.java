@@ -36,7 +36,7 @@ public class Mode27 extends Verifier {
         }
 
         for (int i = 0; i < 9; i++) {
-            int[] box = BoxChecker.collectsInts(board, i);
+            int[] box = BoxChecker.collectInts(board, i);
             BoxChecker boxChecker = new BoxChecker(box, i + 1);
             Thread t = new Thread(boxChecker);
             threads.add(t);

@@ -38,7 +38,7 @@ public class Mode3 extends Verifier {
         Thread boxes = new Thread() {
             public void run() {
                 for (int i = 0; i < 9; i++) {
-                    int[] box = BoxChecker.collectsInts(board, i);
+                    int[] box = BoxChecker.collectInts(board, i);
                     BoxChecker boxChecker = new BoxChecker(box, i + 1);
                     boxChecker.run();
                 }

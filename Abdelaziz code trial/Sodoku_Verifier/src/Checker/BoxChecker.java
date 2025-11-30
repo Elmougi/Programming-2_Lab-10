@@ -13,7 +13,7 @@ public class BoxChecker extends Checker {
         findViolations(values);
     }
 
-    public static int[] collectsInts(int[][] board, int boxIndex) {
+    public static int[] collectInts(int[][] board, int boxIndex) {
         int[] box = new int[9];
         int startRow = (boxIndex / 3) * 3; // the / floors the value so 0-3 is 0 , 4-6 is 1, 7-9 is 2 then *3
         int startCol = (boxIndex % 3) * 3; // % for boxes: 4, 5, 6, 7, 8, 9
@@ -37,7 +37,7 @@ public class BoxChecker extends Checker {
                 }
             }
             if (positions.size() > 1) {
-                Violation violation = new Violation('b', num, j, positions);
+                Violation violation = new Violation(num, j, positions);
                 addViolation(violation);
             }
         }

@@ -31,7 +31,7 @@ public class ColumnChecker extends Checker {
                 }
             }
             if(positions.size() > 1) {
-                Violation violation = new Violation('c', num, j, positions);
+                Violation violation = new Violation(num, j, positions);
                 addViolation(violation);
             }
         }

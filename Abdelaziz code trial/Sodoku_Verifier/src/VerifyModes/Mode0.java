@@ -25,7 +25,7 @@ public class Mode0 extends Verifier {
             ColumnChecker columnChecker = new ColumnChecker(column, i + 1);
             columnChecker.run();
 
-            int[] box = BoxChecker.collectsInts(board, i);
+            int[] box = BoxChecker.collectInts(board, i);
             BoxChecker boxChecker = new BoxChecker(box, i + 1);
             boxChecker.run();
         }
