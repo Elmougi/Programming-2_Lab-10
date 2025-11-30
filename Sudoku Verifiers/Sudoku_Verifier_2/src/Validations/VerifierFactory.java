@@ -1,6 +1,6 @@
-package Verifier2.Validations;
+package Validations;
 
-import Verifier2.Board.SgBoard;
+import Board.SgBoard;
 
 public class VerifierFactory {
 

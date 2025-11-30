@@ -1,6 +1,6 @@
-package Verifier2.Validations;
+package Validations;
 
-import Verifier2.Board.*;
+import Board.*;
 import java.util.ArrayList;
 import java.util.List;
 

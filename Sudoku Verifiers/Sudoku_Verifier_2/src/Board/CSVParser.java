@@ -1,5 +1,5 @@
 
-package Verifier2.Board;
+package Board;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

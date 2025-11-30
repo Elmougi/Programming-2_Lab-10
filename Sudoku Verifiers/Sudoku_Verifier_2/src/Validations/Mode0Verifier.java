@@ -1,7 +1,7 @@
 
-package Verifier2.Validations;
+package Validations;
 
-import Verifier2.Board.*;
+import Board.*;
 
 public class Mode0Verifier extends SgVerifier {
 

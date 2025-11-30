@@ -1,5 +1,5 @@
 
-package Verifier2.Board;
+package Board;
 
 public class Cell {
 
