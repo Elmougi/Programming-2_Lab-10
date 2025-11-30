@@ -1,18 +1,20 @@
-import VerifyModes.VerifyFactory;
-import VerifyModes.Verifier;
+package Verifier1;
+
+import Verifier1.VerifyModes.VerifyFactory;
+import Verifier1.VerifyModes.Verifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import VerifyModes.Result;
+import Verifier1.VerifyModes.Result;
 
 /*
 compile all source files forming the .class instead of the .java
-& "C:\Program Files\Java\jdk-25\bin\javac.exe" -d out -sourcepath src src\App.java
+& "C:\Program Files\Java\jdk-25\bin\javac.exe" -d out -sourcepath src src\Verifier1.Checker.Checker.App.java
 
 create manifest with main class for the .jar
-'Main-Class: App' | Out-File -Encoding ASCII MANIFEST.MF
+'Main-Class: Verifier1.Checker.Checker.App' | Out-File -Encoding ASCII MANIFEST.MF
 
 creating the .jar:
 & "C:\Program Files\Java\jdk-25\bin\jar.exe" cfm app.jar MANIFEST.MF -C out .

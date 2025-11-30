@@ -121,7 +121,7 @@
         <mxCell id="hfnurmSfMgYslTz6u678-45" parent="hfnurmSfMgYslTz6u678-42" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ BoxChecker(int[] values, int num):&lt;div&gt;+ collectInts(int[][] board, int boxIndex): int[]&lt;/div&gt;&lt;div&gt;+ run():&lt;/div&gt;&lt;div&gt;# findViolations(int[]):&lt;/div&gt;&lt;div&gt;# addViolation(Violation):&lt;/div&gt;" vertex="1">
           <mxGeometry height="86" width="250" y="34" as="geometry" />
         </mxCell>
-        <mxCell id="hfnurmSfMgYslTz6u678-47" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="App" vertex="1">
+        <mxCell id="hfnurmSfMgYslTz6u678-47" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Verifier1.App" vertex="1">
           <mxGeometry height="100" width="190" x="220" y="-180" as="geometry" />
         </mxCell>
         <mxCell id="hfnurmSfMgYslTz6u678-49" parent="hfnurmSfMgYslTz6u678-47" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
@@ -130,7 +130,7 @@
         <mxCell id="hfnurmSfMgYslTz6u678-50" parent="hfnurmSfMgYslTz6u678-47" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ main(String[] args):&lt;br&gt;+ run(String File):&lt;div&gt;- readBoard(String File): int[][]&lt;/div&gt;" vertex="1">
           <mxGeometry height="66" width="190" y="34" as="geometry" />
         </mxCell>
-        <mxCell id="YFDsR2oH6G_tZrcl6rDk-27" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="&lt;i&gt;Checker&lt;/i&gt;" vertex="1">
+        <mxCell id="YFDsR2oH6G_tZrcl6rDk-27" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="&lt;i&gt;Verifier1.Checker.Checker&lt;/i&gt;" vertex="1">
           <mxGeometry height="190" width="187" x="-159" y="302" as="geometry" />
         </mxCell>
         <mxCell id="YFDsR2oH6G_tZrcl6rDk-28" parent="YFDsR2oH6G_tZrcl6rDk-27" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="# values: int[]&lt;div&gt;# num: int&amp;nbsp;&lt;/div&gt;&lt;div&gt;# rowViolations: List&amp;lt;Violation&amp;gt;&lt;/div&gt;&lt;div&gt;# rowViolations: List&amp;lt;Violation&amp;gt;&lt;/div&gt;&lt;div&gt;# rowViolations: List&amp;lt;Violation&amp;gt;&lt;/div&gt;" vertex="1">
@@ -139,7 +139,7 @@
         <mxCell id="YFDsR2oH6G_tZrcl6rDk-29" parent="YFDsR2oH6G_tZrcl6rDk-27" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
           <mxGeometry height="8" width="187" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="YFDsR2oH6G_tZrcl6rDk-30" parent="YFDsR2oH6G_tZrcl6rDk-27" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="# Checker(int[] values, int num):&lt;div&gt;# &lt;i&gt;findViolation&lt;/i&gt;(int[] numbers):&lt;/div&gt;&lt;div&gt;# &lt;i&gt;addViolation&lt;/i&gt;(Violation):&lt;/div&gt;&lt;div&gt;getResult(): Result&lt;/div&gt;" vertex="1">
+        <mxCell id="YFDsR2oH6G_tZrcl6rDk-30" parent="YFDsR2oH6G_tZrcl6rDk-27" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="# Verifier1.Checker.Checker(int[] values, int num):&lt;div&gt;# &lt;i&gt;findViolation&lt;/i&gt;(int[] numbers):&lt;/div&gt;&lt;div&gt;# &lt;i&gt;addViolation&lt;/i&gt;(Violation):&lt;/div&gt;&lt;div&gt;getResult(): Result&lt;/div&gt;" vertex="1">
           <mxGeometry height="72" width="187" y="118" as="geometry" />
         </mxCell>
         <mxCell id="YFDsR2oH6G_tZrcl6rDk-31" edge="1" parent="1" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" value="Extends">

@@ -1,7 +1,7 @@
 
-package srcAmr.Validations;
+package Verifier2.Validations;
 
-import srcAmr.Board.*;
+import Verifier2.Board.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

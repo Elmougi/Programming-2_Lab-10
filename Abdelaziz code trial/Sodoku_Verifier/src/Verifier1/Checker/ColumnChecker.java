@@ -1,36 +1,37 @@
-package Checker;
+package Verifier1.Checker;
 
 import java.util.*;
 
-public class RowChecker extends Checker {
+public class ColumnChecker extends Checker {
 
-    public RowChecker(int[] values, int num) {
+    public ColumnChecker(int[] values, int num) {
         super(values, num);
     }
 
     @Override
     public void run() {
+        
         findViolations(values);
     }
 
-    public static int[] collectInts(int[][] board, int rowIndex) {
-        int[] row = new int[9];
-        for (int j = 0; j < 9; j++) {
-            row[j] = board[rowIndex][j];
+    public static int[] collectInts(int[][] board, int colIndex) {    
+        int[] column = new int[9];
+        for (int i = 0; i < 9; i++) {
+            column[i] = board[i][colIndex];
         }
-        return row;
+        return column;
     }
 
     @Override
     protected void findViolations(int[] numbers) {
-        for (int j = 1; j <= 9; j++) {
+        for(int j = 1; j <= 9; j++) {
             Set<Integer> positions = new HashSet<>();
-            for (int k = 0; k < numbers.length; k++) {
-                if (numbers[k] == j) {
+            for(int k = 0; k < numbers.length; k++) {
+                if(numbers[k] == j) {
                     positions.add(k + 1);
                 }
             }
-            if (positions.size() > 1) {
+            if(positions.size() > 1) {
                 Violation violation = new Violation(num, j, positions);
                 addViolation(violation);
             }
@@ -39,6 +40,6 @@ public class RowChecker extends Checker {
 
     @Override
     protected synchronized void addViolation(Violation violation) {
-        rowViolations.add(violation);
+        colViolations.add(violation);
     }
 }

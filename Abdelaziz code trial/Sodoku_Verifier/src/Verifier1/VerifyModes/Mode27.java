@@ -1,6 +1,6 @@
-package VerifyModes;
+package Verifier1.VerifyModes;
 
-import Checker.*;
+import Verifier1.Checker.*;
 import java.util.*;
 
 public class Mode27 extends Verifier {

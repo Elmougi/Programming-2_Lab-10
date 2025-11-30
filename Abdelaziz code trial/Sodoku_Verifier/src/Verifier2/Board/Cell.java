@@ -1,5 +1,5 @@
 
-package srcAmr.Board;
+package Verifier2.Board;
 
 public class Cell {
 
