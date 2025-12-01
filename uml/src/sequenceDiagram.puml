@@ -1,0 +1,186 @@
+@startuml
+!theme plain
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam BoxPadding 10
+skinparam ParticipantPadding 20
+
+title Sudoku Verifier - Sequence Diagram
+
+actor User
+participant "App" as App
+participant "VerifyFactory" as Factory
+participant "Verifier" as Verifier
+participant "Checker" as Checker
+participant "Result" as Result
+
+== Initialization ==
+
+User -> App: java -jar app.jar file.csv mode
+activate App
+note right of App
+Reads command line arguments:
+- CSV file path
+- Verification mode (0, 3, or 27)
+end note
+
+App -> App: readBoard(csvFile)
+note right of App
+Parses CSV and creates 9x9 board
+Validates all values are 1-9
+end note
+
+== Factory Pattern: Create Verifier ==
+
+App -> Factory: createVerifier(mode, board)
+activate Factory
+note right of Factory
+Factory creates appropriate
+verifier based on mode
+end note
+
+alt mode == 0 (Sequential)
+    Factory -> Verifier: Mode0.getInstance(board)
+    activate Verifier
+    Verifier --> Factory: Mode0 instance
+    deactivate Verifier
+    Factory --> App: verifier
+    deactivate Factory
+    
+    App -> Verifier: verify()
+    activate Verifier
+    
+    
+    loop for i = 0 to 8
+        Verifier -> Checker: Process row i
+        activate Checker
+        Checker -> Checker: findViolations()
+        deactivate Checker
+        
+        Verifier -> Checker: Process column i
+        activate Checker
+        Checker -> Checker: findViolations()
+        deactivate Checker
+        
+        Verifier -> Checker: Process box i
+        activate Checker
+        Checker -> Checker: findViolations()
+        deactivate Checker
+    end
+
+else mode == 3 (Three Threads)
+    Factory -> Verifier: Mode3.getInstance(board)
+    activate Verifier
+    Verifier --> Factory: Mode3 instance
+    deactivate Verifier
+    Factory --> App: verifier
+    deactivate Factory
+    
+    App -> Verifier: verify()
+    activate Verifier
+    
+    
+    par Row Thread
+        Verifier -> Checker: Process all 9 rows
+        activate Checker
+        note right of Checker
+        Thread 1: Validates all rows
+        end note
+        loop for each row
+            Checker -> Checker: findViolations()
+        end
+        deactivate Checker
+        
+    else Column Thread
+        Verifier -> Checker: Process all 9 columns
+        activate Checker
+        note right of Checker
+        Thread 2: Validates all columns
+        end note
+        loop for each column
+            Checker -> Checker: findViolations()
+        end
+        deactivate Checker
+        
+    else Box Thread
+        Verifier -> Checker: Process all 9 boxes
+        activate Checker
+        note right of Checker
+        Thread 3: Validates all boxes
+        end note
+        loop for each box
+            Checker -> Checker: findViolations()
+        end
+        deactivate Checker
+    end
+    
+    Verifier -> Verifier: join all threads
+    note right of Verifier
+    Wait for all 3 threads to complete
+    end note
+
+else mode == 27 (Maximum Parallelization)
+    Factory -> Verifier: Mode27.getInstance(board)
+    activate Verifier
+    Verifier --> Factory: Mode27 instance
+    deactivate Verifier
+    Factory --> App: verifier
+    deactivate Factory
+    
+    App -> Verifier: verify()
+    activate Verifier
+    
+    
+    
+    par Row Threads (9 threads)
+        loop for each of 9 rows
+            Verifier -> Checker: Thread for row i
+            activate Checker
+            Checker -> Checker: findViolations()
+            deactivate Checker
+        end
+        
+    else Column Threads (9 threads)
+        loop for each of 9 columns
+            Verifier -> Checker: Thread for column i
+            activate Checker
+            Checker -> Checker: findViolations()
+            deactivate Checker
+        end
+        
+    else Box Threads (9 threads)
+        loop for each of 9 boxes
+            Verifier -> Checker: Thread for box i
+            activate Checker
+            Checker -> Checker: findViolations()
+            deactivate Checker
+        end
+    end
+    
+    Verifier -> Verifier: join all 27 threads
+    note right of Verifier
+    Wait for all 27 threads to complete
+    end note
+end
+
+== Result Collection ==
+
+Verifier -> Checker: getResult()
+activate Checker
+
+Checker -> Result: new Result(rowViolations, colViolations, boxViolations)
+activate Result
+
+Result --> Checker: result object
+deactivate Result
+Checker --> Verifier: result
+deactivate Checker
+Verifier --> App: result
+deactivate Verifier
+
+== Output ==
+
+App -> User: System.out.println(result)
+deactivate App
+
+@enduml
