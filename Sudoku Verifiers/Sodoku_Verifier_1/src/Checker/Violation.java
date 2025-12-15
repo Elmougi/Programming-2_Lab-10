@@ -2,57 +2,37 @@ package Checker;
 
 import java.util.Set;
 
-public class Violation implements Comparable<Violation> {
+public class Violation<T> implements Comparable<Violation<T>> {
     private int index; // 1 to 9; we have 9 of each
-    private int number; // number in violation
-    private Set<Integer> positions; // set to have them arranged for easiness
+    private T value; // number in violation
+    private String positions; // set to have them arranged for easiness
 
-    Violation(int index, int number, Set<Integer> positions) {
-        setIndex(index);
-        setNumber(number);
-        setPositions(positions);
-    }
-
-    public void setIndex(int index) {
-        if (index < 1 || index > 9) {
-            throw new IndexOutOfBoundsException("Index must be between 1 and 9");
-        }
-
+    Violation(int index, T value, Set<Integer> positions) {
         this.index = index;
+        this.value = value;
+        this.positions = getPositionsString(setPositions(positions));
     }
 
-    public void setNumber(int number) {
-        if (number < 1 || number > 9) {
-            throw new IllegalArgumentException("Number must be between 1 and 9");
-        }
-
-        this.number = number;
-    }
-
-    public void setPositions(Set<Integer> positions) {
+    public Set<Integer> setPositions(Set<Integer> positions) {
         if (positions == null || positions.isEmpty()) {
             throw new IllegalArgumentException("Positions cannot be null or empty");
         }
-        for (int pos : positions) {
-            if (pos < 1 || pos > 9) {
-                throw new IndexOutOfBoundsException("Position must be between 1 and 9");
-            }
-        }
 
-        this.positions = positions;
+        return positions;
     }
 
     public int getIndex() {
         return index;
     }
 
-    public int getNumber() {
-        return number;
+    public String getValue() {
+        return value.toString();
     }
 
-    public String getPositionsString() {
+    private String getPositionsString(Set<Integer> positions) {
         StringBuilder s = new StringBuilder();
-        Integer[] values = positions.toArray(new Integer[0]);
+        Integer[] values = positions.toArray(new Integer[positions.size()]);
+        //System.out.println(values.length);
         for (int i = 0; i < values.length; i++) {
             s.append(values[i]);
             if (i < values.length - 1) { // there are values left
@@ -62,8 +42,12 @@ public class Violation implements Comparable<Violation> {
         return s.toString();
     }
 
+    public String getPositions() {
+        return positions;
+    }
+
     @Override
-    public int compareTo(Violation other) { // so I can use the built in Collections.sort()
+    public int compareTo(Violation<T> other) { // so I can use the built in Collections.sort()
         return Integer.compare(this.index, other.index);
     }
 }
