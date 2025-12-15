@@ -13,26 +13,30 @@ public class RowIterator<T> implements BoardIterator<T> {
 
     @Override
     public boolean hasNextList() {
-        return currentRow < board.length;
+        return currentRow+1 < board.length;
     }
 
     @Override
     public boolean hasNextElement() {
-        return currentElement < board[currentRow].length;
+        //System.out.println("Current Row: " + currentRow + ", Current Element: " + currentElement);
+        return currentElement+1 < board[currentRow].length;
     }
 
     @Override
-    public int[] nextList() {
+    public int nextList() {
         if (!hasNextList()) {
             throw new IllegalStateException("No more rows available.");
         }
         currentElement = 0;
-        return new int[] { currentRow++, 0 };
+        return ++currentRow;
     }
 
     @Override
     public T nextElement() {
+        //System.out.println("Current Row: " + currentRow + ", Current Element: " + currentElement);
+        //System.out.println(hasNextElement());
         if (!hasNextElement()) {
+            //System.out.println("NO MORE ELEMENTS");
             return null;
         }
         return board[currentRow][++currentElement];

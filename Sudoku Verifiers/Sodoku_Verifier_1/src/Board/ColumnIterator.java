@@ -13,21 +13,21 @@ public class ColumnIterator<T> implements BoardIterator<T> {
 
     @Override
     public boolean hasNextList() {
-        return currentColumn < board[0].length;
+        return currentColumn+1 < board[0].length;
     }
 
     @Override
     public boolean hasNextElement() {
-        return currentElement < board.length;
+        return currentElement+1 < board.length;
     }
 
     @Override
-    public int[] nextList() {
+    public int nextList() {
         if (!hasNextList()) {
             throw new IllegalStateException("No more columns available.");
         }
         currentElement = 0; 
-        return new int[]{0, currentColumn++};
+        return ++currentColumn;
     }
 
     @Override

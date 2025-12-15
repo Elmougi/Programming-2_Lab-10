@@ -17,21 +17,19 @@ public class BoxIterator<T> implements BoardIterator<T> {
 
     @Override
     public boolean hasNextList() {
-        return currentBox < boxSize * boxSize;
+        return currentBox + 1 < boxSize * boxSize;
     }
 
     @Override
     public boolean hasNextElement() {
-        return currentElement < boxSize * boxSize;
+        return currentElement + 1 < boxSize * boxSize;
     }
 
     @Override
-    public int[] nextList() {
+    public int nextList() {
         if (!hasNextList()) {
             throw new IllegalStateException("No more boxes available.");
         }
-
-        int[] index = new int[] { currentBoxRow * boxSize, currentBoxCol * boxSize };
 
         currentBox++;
         currentBoxCol += boxSize;
@@ -39,7 +37,7 @@ public class BoxIterator<T> implements BoardIterator<T> {
 
         currentElement = 0;
 
-        return index;
+        return currentBox;
     }
 
     @Override
@@ -53,9 +51,9 @@ public class BoxIterator<T> implements BoardIterator<T> {
         int boxRow = currentBox / boxSize;
         int boxCol = currentBox % boxSize;
 
-        T element = board[boxRow * boxSize + rowInBox][boxCol * boxSize + colInBox];
-
         currentElement++;
+
+        T element = board[boxRow * boxSize + rowInBox][boxCol * boxSize + colInBox];
 
         return element;
     }
@@ -78,7 +76,7 @@ public class BoxIterator<T> implements BoardIterator<T> {
         this.currentBoxCol = 0;
         this.currentElement = 0;
     }
-    
+
     @Override
     public int getElementNum() {
         return currentElement;

@@ -9,7 +9,7 @@ public interface BoardIterator<T> {
 
     public int[] currentElementIndex();
 
-    public int[] nextList(); // return index of next list
+    public int nextList(); // return index of next list
 
     public int getElementNum();
 

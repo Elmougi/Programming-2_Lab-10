@@ -16,22 +16,26 @@ creating the .jar:
 & "C:\Program Files\Java\jdk-25\bin\jar.exe" cfm app.jar MANIFEST.MF -C out .
 
 -> I used the whole paths because my device did not read them easily on their own
+
+summary:
+& "C:\Program Files\Java\jdk-25\bin\javac.exe" -d out -sourcepath src src\App.java
+'Main-Class: App' | Out-File -Encoding ASCII MANIFEST.MF
+& "C:\Program Files\Java\jdk-25\bin\jar.exe" cfm app.jar MANIFEST.MF -C out .
+java -jar app.jar <csv-file>
 */
 
 public class App {
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Missing input -> write: java -jar app.jar <csv-file> <mode>");
+        if (args.length != 1) {
+            System.out.println("Missing input -> write: java -jar app.jar <csv-file>");
             return;
         }
 
         String csvFile = args[0];
-        int mode = Integer.parseInt(args[1]);
-
-        run(csvFile, mode);
+        run(csvFile);
     }
 
-    public static void run(String csvFile, int mode) {
+    public static void run(String csvFile) {
         try {
             // Read board
             int[][] board = readBoard(csvFile);

@@ -26,29 +26,39 @@ public class SudokuIntegerChecker {
         BoxIterator<Integer> boxIterator = (BoxIterator<Integer>) board.boxIterator();
 
         findViolations(rowIterator);
+        //System.out.println("Finished rows");
         findViolations(colIterator);
+        //System.out.println("Finished columns");
         findViolations(boxIterator);
+        //System.out.println("Finished boxes");
 
         return new Result<>(rowViolations, colViolations, boxViolations);
     }
 
     private void findViolations(BoardIterator<Integer> iterator) {
         Set<Integer> positions = new HashSet<>();
+        int listIndex = 0;
 
-        while (iterator.hasNextElement()) { // iterate on each row
-            for (int i = 0; i < board.SIZE; i++) { // find each possible element value
+        while (iterator.hasNextList()) { // iterate on each row
+            for (Integer value = 1; value <= board.SIZE; value++) { // find each possible element value
                 positions.clear();
-                Integer value = board.board[0][0];
-
+                Integer compareValue = board.board[0][0];
+                //System.out.println("Checking for value: " + value + " in " + iterator.getClass().getSimpleName() + " #" + iterator.getElementNum());
                 while (iterator.hasNextElement()) { // compare with each element in the row
-                    Integer compareValue = board.board[0][0];
+                    //System.out.println("entered");
+                    //System.out.println("element: " + iterator.getElementNum() + "; Comparing " + compareValue + " with " + value);
+                    //System.out.println("passed");
                     if (value.equals(compareValue)) {
                         positions.add(iterator.getElementNum());
                     }
+                    //System.out.println("before nextElement");
                     compareValue = iterator.nextElement();
+                    //System.out.println("after nextElement");
                 }
+                //System.out.println("Found positions for value " + value + ": " + positions);
+                //System.out.println("out!");
                 if (positions.size() > 1) {
-                    Violation<Integer> violation = new Violation<>(iterator.getElementNum(), value, positions);
+                    Violation<Integer> violation = new Violation<>(listIndex+1, value, positions);
                     if (iterator instanceof BoxIterator) {
                         addBoxViolation(violation);
                     } else if (iterator instanceof ColumnIterator) {
@@ -61,7 +71,7 @@ public class SudokuIntegerChecker {
                 }
             }
 
-            iterator.nextList(); // move to next row
+            listIndex = iterator.nextList(); // move to next list
         }
 
     }
