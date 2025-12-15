@@ -1,6 +1,6 @@
 package Board;
 
-public class BoxIterator_2D<T> implements BoardIterator<T> {
+public class BoxIterator<T> implements BoardIterator<T> {
     private final T[][] board;
     private final int boxSize;
     private int currentBox; // current box
@@ -8,7 +8,7 @@ public class BoxIterator_2D<T> implements BoardIterator<T> {
     private int currentBoxCol; // index of the current box column
     private int currentElement; // index within the current box
 
-    public BoxIterator_2D(T[][] board) {
+    public BoxIterator(T[][] board) {
         this.board = board;
         this.boxSize = (int) Math.sqrt(board.length);
         this.currentBox = 0;
@@ -26,7 +26,7 @@ public class BoxIterator_2D<T> implements BoardIterator<T> {
     }
 
     @Override
-    public int[] nextListIndex() {
+    public int[] nextList() {
         if (!hasNextList()) {
             throw new IllegalStateException("No more boxes available.");
         }
@@ -61,11 +61,27 @@ public class BoxIterator_2D<T> implements BoardIterator<T> {
     }
 
     @Override
+    public int[] currentElementIndex() {
+        int rowInBox = (currentElement - 1) / boxSize;
+        int colInBox = (currentElement - 1) % boxSize;
+
+        int boxRow = (currentBox - 1) / boxSize;
+        int boxCol = (currentBox - 1) % boxSize;
+
+        return new int[] { boxRow * boxSize + rowInBox, boxCol * boxSize + colInBox };
+    }
+
+    @Override
     public void reset() {
         this.currentBox = 0;
         this.currentBoxRow = 0;
         this.currentBoxCol = 0;
         this.currentElement = 0;
+    }
+    
+    @Override
+    public int getElementNum() {
+        return currentElement;
     }
 
 }

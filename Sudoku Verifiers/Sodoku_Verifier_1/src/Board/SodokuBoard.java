@@ -1,25 +1,30 @@
 package Board;
 
 public class SodokuBoard<T> implements Board<T> {
-    private final T[][] board;
+    public final T[][] board;
+    public final int SIZE;
 
-    public SodokuBoard(T[][] board) {
+    public SodokuBoard(int size, T[][] board) {
+        this.SIZE = size;
+        if(board.length != SIZE || board[0].length != SIZE) {
+            throw new IllegalArgumentException("Board must be " + SIZE + "x" + SIZE + ".");
+        }
         this.board = board;
     }
 
     @Override
     public BoardIterator<T> rowIterator() {
-        return new RowIterator_2D<>(board);
+        return new RowIterator<>(board);
     }
 
     @Override
     public BoardIterator<T> columnIterator() {
-        return new ColumnIterator_2D<>(board);
+        return new ColumnIterator<>(board);
     }
 
     @Override
-    public BoardIterator<T> oxIterator() {
-        return new BoxIterator_2D<>(board);
+    public BoardIterator<T> boxIterator() {
+        return new BoxIterator<>(board);
     }
 
 }

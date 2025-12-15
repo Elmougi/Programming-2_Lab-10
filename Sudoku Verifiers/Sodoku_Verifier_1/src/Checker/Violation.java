@@ -2,41 +2,20 @@ package Checker;
 
 import java.util.Set;
 
-public class Violation implements Comparable<Violation> {
+public class Violation<T> implements Comparable<Violation<T>> {
     private int index; // 1 to 9; we have 9 of each
-    private int number; // number in violation
+    private T value; // number in violation
     private Set<Integer> positions; // set to have them arranged for easiness
 
-    Violation(int index, int number, Set<Integer> positions) {
-        setIndex(index);
-        setNumber(number);
-        setPositions(positions);
-    }
-
-    public void setIndex(int index) {
-        if (index < 1 || index > 9) {
-            throw new IndexOutOfBoundsException("Index must be between 1 and 9");
-        }
-
+    Violation(int index, T value, Set<Integer> positions) {
         this.index = index;
-    }
-
-    public void setNumber(int number) {
-        if (number < 1 || number > 9) {
-            throw new IllegalArgumentException("Number must be between 1 and 9");
-        }
-
-        this.number = number;
+        this.value = value;
+        setPositions(positions);
     }
 
     public void setPositions(Set<Integer> positions) {
         if (positions == null || positions.isEmpty()) {
             throw new IllegalArgumentException("Positions cannot be null or empty");
-        }
-        for (int pos : positions) {
-            if (pos < 1 || pos > 9) {
-                throw new IndexOutOfBoundsException("Position must be between 1 and 9");
-            }
         }
 
         this.positions = positions;
@@ -46,8 +25,8 @@ public class Violation implements Comparable<Violation> {
         return index;
     }
 
-    public int getNumber() {
-        return number;
+    public String getValue() {
+        return value.toString();
     }
 
     public String getPositionsString() {
@@ -63,7 +42,7 @@ public class Violation implements Comparable<Violation> {
     }
 
     @Override
-    public int compareTo(Violation other) { // so I can use the built in Collections.sort()
+    public int compareTo(Violation<T> other) { // so I can use the built in Collections.sort()
         return Integer.compare(this.index, other.index);
     }
 }

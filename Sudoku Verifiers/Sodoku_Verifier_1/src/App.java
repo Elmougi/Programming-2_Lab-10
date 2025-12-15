@@ -1,11 +1,9 @@
-import VerifyModes.VerifyFactory;
-import VerifyModes.Verifier;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import VerifyModes.Result;
+import Checker.IntegerVerifier;
+import Checker.Result;
 
 /*
 compile all source files forming the .class instead of the .java
@@ -39,10 +37,10 @@ public class App {
             int[][] board = readBoard(csvFile);
 
             // Create appropriate verifier using factory
-            Verifier verifier = VerifyFactory.createVerifier(mode, board);
+            IntegerVerifier verifier = new IntegerVerifier(board);
 
             // Perform verification
-            Result result = verifier.verify();
+            Result<Integer> result = verifier.verify();
 
             System.out.println(result);
 

@@ -1,11 +1,11 @@
 package Board;
 
-public class ColumnIterator_2D<T> implements BoardIterator<T> {
+public class ColumnIterator<T> implements BoardIterator<T> {
     private final T[][] board;
     private int currentColumn; // index
     private int currentElement; // relative to the column
 
-    public ColumnIterator_2D(T[][] board) {
+    public ColumnIterator(T[][] board) {
         this.board = board;
         this.currentColumn = 0;
         this.currentElement = 0;
@@ -22,7 +22,7 @@ public class ColumnIterator_2D<T> implements BoardIterator<T> {
     }
 
     @Override
-    public int[] nextListIndex() {
+    public int[] nextList() {
         if (!hasNextList()) {
             throw new IllegalStateException("No more columns available.");
         }
@@ -35,13 +35,23 @@ public class ColumnIterator_2D<T> implements BoardIterator<T> {
         if (!hasNextElement()) {
             return null;
         }
-        return board[currentElement++][currentColumn];
+        return board[++currentElement][currentColumn];
+    }
+
+    @Override
+    public int[] currentElementIndex() {
+        return new int[]{currentElement, currentColumn};
     }
 
     @Override
     public void reset() {
         this.currentColumn = 0;
         this.currentElement = 0;
+    }
+
+    @Override
+    public int getElementNum() {
+        return currentElement;
     }
 
 }

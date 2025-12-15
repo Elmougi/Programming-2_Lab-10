@@ -5,5 +5,5 @@ public interface Board<T> {
 
     public BoardIterator<T> columnIterator();
 
-    public BoardIterator<T> oxIterator();
+    public BoardIterator<T> boxIterator();
 }

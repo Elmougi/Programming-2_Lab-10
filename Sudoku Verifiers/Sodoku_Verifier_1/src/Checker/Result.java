@@ -1,18 +1,16 @@
-package VerifyModes;
+package Checker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
-import Checker.Violation;
-
-public class Result {
+public class Result<T> {
     private boolean isValid;
-    private List<Violation> rowViolations = new ArrayList<>();
-    private List<Violation> colViolations = new ArrayList<>();
-    private List<Violation> boxViolations = new ArrayList<>();
+    private List<Violation<T>> rowViolations = new ArrayList<>();
+    private List<Violation<T>> colViolations = new ArrayList<>();
+    private List<Violation<T>> boxViolations = new ArrayList<>();
 
-    public Result(List<Violation> rowViolations, List<Violation> colViolations, List<Violation> boxViolations) {
+    public Result(List<Violation<T>> rowViolations, List<Violation<T>> colViolations, List<Violation<T>> boxViolations) {
         this.rowViolations = rowViolations;
         this.colViolations = colViolations;
         this.boxViolations = boxViolations;
@@ -34,16 +32,16 @@ public class Result {
             Collections.sort(boxViolations);
 
             s.append("INVALID.\n\n");
-            for (Violation r : rowViolations) {
-                s.append("Row " + r.getIndex() + ", #" + r.getNumber() + ", [" + r.getPositionsString() + "]\n");
+            for (Violation<T> r : rowViolations) {
+                s.append("Row " + r.getIndex() + ", #" + r.getValue() + ", [" + r.getPositionsString() + "]\n");
             }
             s.append("----------------------------------------------\n");
-            for (Violation c : colViolations) {
-                s.append("Col " + c.getIndex() + ", #" + c.getNumber() + ", [" + c.getPositionsString() + "]\n");
+            for (Violation<T> c : colViolations) {
+                s.append("Col " + c.getIndex() + ", #" + c.getValue() + ", [" + c.getPositionsString() + "]\n");
             }
             s.append("----------------------------------------------\n");
-            for (Violation b : boxViolations) {
-                s.append("Box " + b.getIndex() + ", #" + b.getNumber() + ", [" + b.getPositionsString() + "]\n");
+            for (Violation<T> b : boxViolations) {
+                s.append("Box " + b.getIndex() + ", #" + b.getValue() + ", [" + b.getPositionsString() + "]\n");
             }
         }
         return s.toString();
