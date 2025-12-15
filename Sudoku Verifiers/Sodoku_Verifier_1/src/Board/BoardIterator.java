@@ -14,4 +14,6 @@ public interface BoardIterator<T> {
     public int getElementNum();
 
     public void reset();
+
+    public void resetList();
 }

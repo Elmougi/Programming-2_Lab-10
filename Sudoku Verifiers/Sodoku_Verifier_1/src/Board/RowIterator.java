@@ -13,13 +13,13 @@ public class RowIterator<T> implements BoardIterator<T> {
 
     @Override
     public boolean hasNextList() {
-        return currentRow+1 < board.length;
+        return currentRow + 1 < board.length;
     }
 
     @Override
     public boolean hasNextElement() {
         //System.out.println("Current Row: " + currentRow + ", Current Element: " + currentElement);
-        return currentElement+1 < board[currentRow].length;
+        return currentElement < board[currentRow].length;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RowIterator<T> implements BoardIterator<T> {
             //System.out.println("NO MORE ELEMENTS");
             return null;
         }
-        return board[currentRow][++currentElement];
+        return board[currentRow][currentElement++];
     }
 
     @Override
@@ -56,5 +56,10 @@ public class RowIterator<T> implements BoardIterator<T> {
     @Override
     public int getElementNum() {
         return currentElement;
+    }
+    
+    @Override
+    public void resetList() {
+        this.currentElement = 0;
     }
 }

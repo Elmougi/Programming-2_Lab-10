@@ -13,12 +13,12 @@ public class ColumnIterator<T> implements BoardIterator<T> {
 
     @Override
     public boolean hasNextList() {
-        return currentColumn+1 < board[0].length;
+        return currentColumn + 1 < board[0].length;
     }
 
     @Override
     public boolean hasNextElement() {
-        return currentElement+1 < board.length;
+        return currentElement < board.length;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ColumnIterator<T> implements BoardIterator<T> {
         if (!hasNextElement()) {
             return null;
         }
-        return board[++currentElement][currentColumn];
+        return board[currentElement++][currentColumn];
     }
 
     @Override
@@ -54,4 +54,8 @@ public class ColumnIterator<T> implements BoardIterator<T> {
         return currentElement;
     }
 
+    @Override
+    public void resetList() {
+        this.currentElement = 0;
+    }
 }

@@ -5,20 +5,20 @@ import java.util.Set;
 public class Violation<T> implements Comparable<Violation<T>> {
     private int index; // 1 to 9; we have 9 of each
     private T value; // number in violation
-    private Set<Integer> positions; // set to have them arranged for easiness
+    private String positions; // set to have them arranged for easiness
 
     Violation(int index, T value, Set<Integer> positions) {
         this.index = index;
         this.value = value;
-        setPositions(positions);
+        this.positions = getPositionsString(setPositions(positions));
     }
 
-    public void setPositions(Set<Integer> positions) {
+    public Set<Integer> setPositions(Set<Integer> positions) {
         if (positions == null || positions.isEmpty()) {
             throw new IllegalArgumentException("Positions cannot be null or empty");
         }
 
-        this.positions = positions;
+        return positions;
     }
 
     public int getIndex() {
@@ -29,9 +29,10 @@ public class Violation<T> implements Comparable<Violation<T>> {
         return value.toString();
     }
 
-    public String getPositionsString() {
+    private String getPositionsString(Set<Integer> positions) {
         StringBuilder s = new StringBuilder();
-        Integer[] values = positions.toArray(new Integer[0]);
+        Integer[] values = positions.toArray(new Integer[positions.size()]);
+        //System.out.println(values.length);
         for (int i = 0; i < values.length; i++) {
             s.append(values[i]);
             if (i < values.length - 1) { // there are values left
@@ -39,6 +40,10 @@ public class Violation<T> implements Comparable<Violation<T>> {
             }
         }
         return s.toString();
+    }
+
+    public String getPositions() {
+        return positions;
     }
 
     @Override
