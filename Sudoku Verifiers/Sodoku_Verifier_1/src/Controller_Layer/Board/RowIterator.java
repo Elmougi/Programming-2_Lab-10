@@ -2,8 +2,8 @@ package Controller_Layer.Board;
 
 public class RowIterator<T> implements BoardIterator<T> {
     private final T[][] board;
-    private int currentRow; // index
-    private int currentElement; // relative to the row
+    private int currentRow; // 0-indexed
+    private int currentElement; // relative to the row -> 1-indexed
 
     public RowIterator(T[][] board) {
         this.board = board;
@@ -44,7 +44,7 @@ public class RowIterator<T> implements BoardIterator<T> {
 
     @Override
     public int[] currentElementIndex() {
-        return new int[] { currentRow, currentElement };
+        return new int[] { currentRow, currentElement - 1};
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RowIterator<T> implements BoardIterator<T> {
 
     @Override
     public int getElementNum() {
-        return currentElement + 1;
+        return currentElement;
     }
     
     @Override

@@ -3,8 +3,9 @@ package Controller_Layer.Board;
 public class BoxIterator<T> implements BoardIterator<T> {
     private final T[][] board;
     private final int boxSize;
-    private int currentBox; // current box
-    private int currentElement; // index within the current box
+    private int currentBox; // current box -> 0 indexed
+    private int currentElement; // 1 indexed within the box -> in next element it is incremented after use so
+                                // starts at 0
 
     public BoxIterator(T[][] board) {
         this.board = board;
@@ -45,7 +46,7 @@ public class BoxIterator<T> implements BoardIterator<T> {
         int boxCol = currentBox % boxSize;
 
         T element = board[boxRow * boxSize + rowInBox][boxCol * boxSize + colInBox];
-        currentElement++;
+        currentElement++; // increment after use
 
         return element;
     }
@@ -55,8 +56,8 @@ public class BoxIterator<T> implements BoardIterator<T> {
         int rowInBox = (currentElement - 1) / boxSize;
         int colInBox = (currentElement - 1) % boxSize;
 
-        int boxCol = (currentBox - 1) % boxSize;
-        int boxRow = (currentBox - 1) / boxSize;
+        int boxCol = currentBox % boxSize;
+        int boxRow = currentBox / boxSize;
 
         return new int[] { boxRow * boxSize + rowInBox, boxCol * boxSize + colInBox };
     }
@@ -82,7 +83,7 @@ public class BoxIterator<T> implements BoardIterator<T> {
         if (listIndex < 0 || listIndex >= boxSize * boxSize) {
             throw new IllegalArgumentException("Invalid box index: " + listIndex);
         }
-        this.currentBox = listIndex + 1;
+        this.currentBox = listIndex;
         this.currentElement = 0;
     }
 }
