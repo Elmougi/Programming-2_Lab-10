@@ -1,4 +1,4 @@
-package Board;
+package Controller_Layer.Board;
 
 public class SodokuBoard<T> implements Board<T> {
     public final T[][] board;

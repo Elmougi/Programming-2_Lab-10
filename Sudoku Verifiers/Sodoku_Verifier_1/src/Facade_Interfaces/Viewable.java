@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import Controller_Layer.Catalog;
 import Controller_Layer.Game;
-import CreatingBoards.DifficultyEnum;
+import Controller_Layer.CreatingBoards.DifficultyEnum;
 import gameExceptions.InvalidGame;
 import gameExceptions.NotFoundException;
 import gameExceptions.SolutionInvalidException;
