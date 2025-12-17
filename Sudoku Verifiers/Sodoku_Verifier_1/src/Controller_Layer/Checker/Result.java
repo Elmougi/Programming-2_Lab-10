@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.Collections;
 
 public class Result<T> {
-    private boolean isValid;
-    private List<Violation<T>> rowViolations = new ArrayList<>();
-    private List<Violation<T>> colViolations = new ArrayList<>();
-    private List<Violation<T>> boxViolations = new ArrayList<>();
+    protected boolean isValid;
+    protected List<Violation<T>> rowViolations = new ArrayList<>();
+    protected List<Violation<T>> colViolations = new ArrayList<>();
+    protected List<Violation<T>> boxViolations = new ArrayList<>();
 
     public Result(List<Violation<T>> rowViolations, List<Violation<T>> colViolations,
             List<Violation<T>> boxViolations) {
+
+        if (rowViolations == null || colViolations == null || boxViolations == null) {
+            throw new IllegalArgumentException("Violation lists cannot be null");
+        }
+
         this.rowViolations = rowViolations;
         this.colViolations = colViolations;
         this.boxViolations = boxViolations;
@@ -34,15 +39,15 @@ public class Result<T> {
 
             s.append("INVALID.\n\n");
             for (Violation<T> r : rowViolations) {
-                s.append("Row " + r.getIndex() + ", #" + r.getValue() + ", [" + r.getPositions() + "]\n");
+                s.append("Row " + r.getPos() + ", #" + r.getValue() + ", [" + r.getPositions() + "]\n");
             }
             s.append("----------------------------------------------\n");
             for (Violation<T> c : colViolations) {
-                s.append("Col " + c.getIndex() + ", #" + c.getValue() + ", [" + c.getPositions() + "]\n");
+                s.append("Col " + c.getPos() + ", #" + c.getValue() + ", [" + c.getPositions() + "]\n");
             }
             s.append("----------------------------------------------\n");
             for (Violation<T> b : boxViolations) {
-                s.append("Box " + b.getIndex() + ", #" + b.getValue() + ", [" + b.getPositions() + "]\n");
+                s.append("Box " + b.getPos() + ", #" + b.getValue() + ", [" + b.getPositions() + "]\n");
             }
         }
         return s.toString();

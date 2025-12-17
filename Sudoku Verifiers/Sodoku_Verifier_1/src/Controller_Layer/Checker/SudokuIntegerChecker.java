@@ -66,7 +66,7 @@ public class SudokuIntegerChecker {
                 // System.out.println("out!");
                 if (positions.size() > 1) {
                     //System.out.println(positions.toString());
-                    Violation<Integer> violation = new Violation<>(listIndex + 1, value, positions);
+                    Violation<Integer> violation = new Violation<>(listIndex, value, positions);
                     if (iterator instanceof BoxIterator) {
                         addBoxViolation(violation);
                     } else if (iterator instanceof ColumnIterator) {

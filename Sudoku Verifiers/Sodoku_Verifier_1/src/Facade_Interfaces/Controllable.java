@@ -2,6 +2,7 @@ package Facade_Interfaces;
 
 import java.io.IOException;
 
+import View_Layer.UserAction;
 import gameExceptions.*;
 
 public interface Controllable {
@@ -18,5 +19,5 @@ public interface Controllable {
     int[][] solveGame(int[][] game) throws InvalidGame;
 
     // Logs the user action
-    //void logUserAction(UserAction userAction) throws IOException;
+    void logUserAction(UserAction userAction) throws IOException;
 }

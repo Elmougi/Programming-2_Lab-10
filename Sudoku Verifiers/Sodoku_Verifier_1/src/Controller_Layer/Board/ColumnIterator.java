@@ -2,8 +2,8 @@ package Controller_Layer.Board;
 
 public class ColumnIterator<T> implements BoardIterator<T> {
     private final T[][] board;
-    private int currentColumn; // index
-    private int currentElement; // relative to the column
+    private int currentColumn; // 0 indexed
+    private int currentElement; // relative to the column -> 1-indexed
 
     public ColumnIterator(T[][] board) {
         this.board = board;
@@ -40,7 +40,7 @@ public class ColumnIterator<T> implements BoardIterator<T> {
 
     @Override
     public int[] currentElementIndex() {
-        return new int[]{currentElement, currentColumn};
+        return new int[]{currentElement - 1, currentColumn};
     }
 
     @Override
@@ -56,6 +56,15 @@ public class ColumnIterator<T> implements BoardIterator<T> {
 
     @Override
     public void resetList() {
+        this.currentElement = 0;
+    }
+
+    @Override
+    public void setToList(int listIndex) {
+        if (listIndex < 0 || listIndex >= board[0].length) {
+            throw new IllegalArgumentException("Invalid column index: " + listIndex);
+        }
+        this.currentColumn = listIndex;
         this.currentElement = 0;
     }
 }

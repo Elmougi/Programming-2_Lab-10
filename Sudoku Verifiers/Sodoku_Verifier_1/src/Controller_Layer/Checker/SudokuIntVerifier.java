@@ -2,10 +2,10 @@ package Controller_Layer.Checker;
 
 import Controller_Layer.Board.SodokuBoard;
 
-public class IntegerVerifier {
+public class SudokuIntVerifier {
     protected Integer[][] board;
 
-    public IntegerVerifier(int[][] board) {
+    public SudokuIntVerifier(int[][] board) {
         if (board == null) {
             throw new IllegalArgumentException("Board cannot be null.");
         }
@@ -19,7 +19,7 @@ public class IntegerVerifier {
         }
     }
 
-    public IntegerVerifier(Integer[][] board) {
+    public SudokuIntVerifier(Integer[][] board) {
         if (board == null) {
             throw new IllegalArgumentException("Board cannot be null.");
         }

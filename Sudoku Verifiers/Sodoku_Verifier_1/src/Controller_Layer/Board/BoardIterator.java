@@ -16,4 +16,6 @@ public interface BoardIterator<T> {
     public void reset();
 
     public void resetList();
+
+    public void setToList(int listIndex);
 }
