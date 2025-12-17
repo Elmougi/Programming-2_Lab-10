@@ -21,8 +21,12 @@ public class Violation<T> implements Comparable<Violation<T>> {
         return positions;
     }
 
-    public int getIndex() {
+    public int getPos() {
         return index;
+    }
+
+    public int getIndex() {
+        return index - 1;
     }
 
     public T getValue() {

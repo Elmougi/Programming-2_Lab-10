@@ -39,15 +39,15 @@ public class Result<T> {
 
             s.append("INVALID.\n\n");
             for (Violation<T> r : rowViolations) {
-                s.append("Row " + r.getIndex() + ", #" + r.getValue() + ", [" + r.getPositions() + "]\n");
+                s.append("Row " + r.getPos() + ", #" + r.getValue() + ", [" + r.getPositions() + "]\n");
             }
             s.append("----------------------------------------------\n");
             for (Violation<T> c : colViolations) {
-                s.append("Col " + c.getIndex() + ", #" + c.getValue() + ", [" + c.getPositions() + "]\n");
+                s.append("Col " + c.getPos() + ", #" + c.getValue() + ", [" + c.getPositions() + "]\n");
             }
             s.append("----------------------------------------------\n");
             for (Violation<T> b : boxViolations) {
-                s.append("Box " + b.getIndex() + ", #" + b.getValue() + ", [" + b.getPositions() + "]\n");
+                s.append("Box " + b.getPos() + ", #" + b.getValue() + ", [" + b.getPositions() + "]\n");
             }
         }
         return s.toString();

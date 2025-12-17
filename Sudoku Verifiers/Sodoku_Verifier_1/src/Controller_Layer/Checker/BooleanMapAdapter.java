@@ -44,7 +44,7 @@ public class BooleanMapAdapter<T> { // adapter does not extend another class bec
     private void markFalse(boolean[][] map, BoardIterator<T> iterator, List<Violation<T>> violations) {
         for (Violation<T> violation : violations) {
             T value = violation.getValue();
-            int list = violation.getIndex();
+            int list = violation.getIndex() - 1;
 
             iterator.setToList(list);
             while (iterator.hasNextElement()) {
