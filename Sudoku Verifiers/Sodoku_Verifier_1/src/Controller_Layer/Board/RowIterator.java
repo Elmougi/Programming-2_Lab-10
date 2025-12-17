@@ -1,4 +1,4 @@
-package Board;
+package Controller_Layer.Board;
 
 public class RowIterator<T> implements BoardIterator<T> {
     private final T[][] board;

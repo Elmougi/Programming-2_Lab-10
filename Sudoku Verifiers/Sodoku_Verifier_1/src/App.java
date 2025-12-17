@@ -2,8 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import Checker.IntegerVerifier;
-import Checker.Result;
+import Controller_Layer.Checker.IntegerVerifier;
+import Controller_Layer.Checker.Result;
 
 /*
 compile all source files forming the .class instead of the .java

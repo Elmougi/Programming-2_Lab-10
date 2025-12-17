@@ -1,4 +1,4 @@
-package CreatingBoards;
+package Controller_Layer.CreatingBoards;
 
 public enum DifficultyEnum {
     hard(25),

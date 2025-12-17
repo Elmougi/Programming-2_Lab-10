@@ -1,5 +1,5 @@
-import Board.SodokuBoard;
-import CreatingBoards.CreateBoardGames;
+import Controller_Layer.Board.SodokuBoard;
+import Controller_Layer.CreatingBoards.CreateBoardGames;
 
 public class Tester {
     public static void main(String[] args) {

@@ -1,10 +1,10 @@
-package CreatingBoards;
+package Controller_Layer.CreatingBoards;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import Board.SodokuBoard;
+import Controller_Layer.Board.SodokuBoard;
 
 public class CreateBoardGames {
     private static final int BOARD_SIZE = 9;

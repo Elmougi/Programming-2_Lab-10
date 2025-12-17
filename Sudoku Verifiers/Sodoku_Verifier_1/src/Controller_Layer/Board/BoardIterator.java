@@ -1,4 +1,4 @@
-package Board;
+package Controller_Layer.Board;
 
 public interface BoardIterator<T> {
     public boolean hasNextElement();

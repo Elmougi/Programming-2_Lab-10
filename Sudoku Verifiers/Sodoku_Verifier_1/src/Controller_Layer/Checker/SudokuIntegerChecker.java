@@ -1,11 +1,11 @@
-package Checker;
+package Controller_Layer.Checker;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import Board.*;
+import Controller_Layer.Board.*;
 
 public class SudokuIntegerChecker {
     final public SodokuBoard<Integer> board;

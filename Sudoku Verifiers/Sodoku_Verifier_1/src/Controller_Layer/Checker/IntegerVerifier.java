@@ -1,6 +1,6 @@
-package Checker;
+package Controller_Layer.Checker;
 
-import Board.SodokuBoard;
+import Controller_Layer.Board.SodokuBoard;
 
 public class IntegerVerifier {
     protected Integer[][] board;

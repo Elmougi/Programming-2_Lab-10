@@ -1,4 +1,4 @@
-package CreatingBoards;
+package Controller_Layer.CreatingBoards;
 
 import java.util.ArrayList;
 import java.util.HashSet;
