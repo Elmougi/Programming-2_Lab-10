@@ -3,12 +3,12 @@ package Controller_Layer.Checker;
 import java.util.Set;
 
 public class Violation<T> implements Comparable<Violation<T>> {
-    private int index; // 1 to 9; we have 9 of each
+    private int index; // 1 to 9; we have 9 of each assuming size of array is 9
     private T value; // number in violation
     private String positions; // set to have them arranged for easiness
 
     Violation(int index, T value, Set<Integer> positions) {
-        this.index = index;
+        this.index = index + 1;
         this.value = value;
         this.positions = getPositionsString(setPositions(positions));
     }
@@ -25,14 +25,14 @@ public class Violation<T> implements Comparable<Violation<T>> {
         return index;
     }
 
-    public String getValue() {
-        return value.toString();
+    public T getValue() {
+        return value;
     }
 
     private String getPositionsString(Set<Integer> positions) {
         StringBuilder s = new StringBuilder();
         Integer[] values = positions.toArray(new Integer[positions.size()]);
-        //System.out.println(values.length);
+        // System.out.println(values.length);
         for (int i = 0; i < values.length; i++) {
             s.append(values[i]);
             if (i < values.length - 1) { // there are values left

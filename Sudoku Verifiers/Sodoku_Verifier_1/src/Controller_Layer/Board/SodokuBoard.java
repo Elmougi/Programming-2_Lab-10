@@ -6,7 +6,7 @@ public class SodokuBoard<T> implements Board<T> {
 
     public SodokuBoard(int size, T[][] board) {
         this.SIZE = size;
-        if(board.length != SIZE || board[0].length != SIZE) {
+        if (board.length != SIZE || board[0].length != SIZE) {
             throw new IllegalArgumentException("Board must be " + SIZE + "x" + SIZE + ".");
         }
         this.board = board;

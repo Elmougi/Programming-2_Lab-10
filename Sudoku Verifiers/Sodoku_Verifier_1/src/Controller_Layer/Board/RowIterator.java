@@ -55,11 +55,20 @@ public class RowIterator<T> implements BoardIterator<T> {
 
     @Override
     public int getElementNum() {
-        return currentElement;
+        return currentElement + 1;
     }
     
     @Override
     public void resetList() {
+        this.currentElement = 0;
+    }
+
+    @Override
+    public void setToList(int listIndex) {
+        if (listIndex < 0 || listIndex >= board.length) {
+            throw new IllegalArgumentException("Invalid row index: " + listIndex);
+        }
+        this.currentRow = listIndex;
         this.currentElement = 0;
     }
 }

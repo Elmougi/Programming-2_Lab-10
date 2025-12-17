@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import Controller_Layer.Checker.IntegerVerifier;
+import Controller_Layer.Checker.SudokuIntVerifier;
 import Controller_Layer.Checker.Result;
 
 /*
@@ -41,7 +41,7 @@ public class App {
             int[][] board = readBoard(csvFile);
 
             // Create appropriate verifier using factory
-            IntegerVerifier verifier = new IntegerVerifier(board);
+            SudokuIntVerifier verifier = new SudokuIntVerifier(board);
 
             // Perform verification
             Result<Integer> result = verifier.verify();

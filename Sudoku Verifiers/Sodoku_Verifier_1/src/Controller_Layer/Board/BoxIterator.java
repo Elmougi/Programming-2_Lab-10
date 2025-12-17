@@ -29,10 +29,8 @@ public class BoxIterator<T> implements BoardIterator<T> {
             throw new IllegalStateException("No more boxes available.");
         }
 
-        currentBox++;
         currentElement = 0;
-
-        return currentBox;
+        return ++currentBox;
     }
 
     @Override
@@ -57,8 +55,8 @@ public class BoxIterator<T> implements BoardIterator<T> {
         int rowInBox = (currentElement - 1) / boxSize;
         int colInBox = (currentElement - 1) % boxSize;
 
-        int boxRow = (currentBox - 1) / boxSize;
         int boxCol = (currentBox - 1) % boxSize;
+        int boxRow = (currentBox - 1) / boxSize;
 
         return new int[] { boxRow * boxSize + rowInBox, boxCol * boxSize + colInBox };
     }
@@ -79,4 +77,12 @@ public class BoxIterator<T> implements BoardIterator<T> {
         this.currentElement = 0;
     }
 
+    @Override
+    public void setToList(int listIndex) {
+        if (listIndex < 0 || listIndex >= boxSize * boxSize) {
+            throw new IllegalArgumentException("Invalid box index: " + listIndex);
+        }
+        this.currentBox = listIndex + 1;
+        this.currentElement = 0;
+    }
 }
