@@ -53,7 +53,7 @@ public class App {
         }
     }
 
-    private static int[][] readBoard(String filePath) {
+    protected static int[][] readBoard(String filePath) {
         int[][] grid = new int[9][9];
 
         try (Scanner scanner = new Scanner(new File(filePath))) {

@@ -27,4 +27,15 @@ public class SodokuBoard<T> implements Board<T> {
         return new BoxIterator<>(board);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                sb.append(board[i][j]).append(",");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }
