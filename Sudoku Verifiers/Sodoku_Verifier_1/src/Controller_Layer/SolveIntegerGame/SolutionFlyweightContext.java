@@ -24,28 +24,29 @@ public class SolutionFlyweightContext { // trying a possible solution
             int colIndex = game.cols.get(i);
             int boxIndex = game.boxes.get(i);
 
-            valid = verifyList(rowIter, rowIndex);
+            valid = verifyList(rowIter, rowIndex, valuesToTry[i]);
             if (!valid)
                 return false;
 
-            valid = verifyList(colIter, colIndex);
+            valid = verifyList(colIter, colIndex, valuesToTry[i]);
             if (!valid)
                 return false;
 
-            valid = verifyList(boxIter, boxIndex);
+            valid = verifyList(boxIter, boxIndex, valuesToTry[i]);
             if (!valid)
                 return false;
         }
+        applyValues();
         return true;
     }
 
-    private boolean verifyList(BoardIterator<Integer> iterator, int index) {
+    private boolean verifyList(BoardIterator<Integer> iterator, int index, int missingValue) {
         iterator.setToList(index);
         boolean[] seen = new boolean[game.SIZE + 1]; // assuming values are 1 to SIZE
         while (iterator.hasNextElement()) {
             Integer val = iterator.nextElement();
             if (val == 0) {
-                throw new IllegalStateException("Found empty value where I shouldn't have");
+                val = missingValue;
             }
             if (seen[val]) {
                 return false; // it was found before; hence, wrong list

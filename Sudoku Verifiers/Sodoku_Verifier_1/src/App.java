@@ -40,10 +40,8 @@ public class App {
             // Read board
             int[][] board = readBoard(csvFile);
 
-            // Create appropriate verifier using factory
             SudokuIntVerifier verifier = new SudokuIntVerifier(board);
 
-            // Perform verification
             Result<Integer> result = verifier.verify();
 
             System.out.println(result);
@@ -53,7 +51,7 @@ public class App {
         }
     }
 
-    protected static int[][] readBoard(String filePath) {
+    public static int[][] readBoard(String filePath) {
         int[][] grid = new int[9][9];
 
         try (Scanner scanner = new Scanner(new File(filePath))) {
@@ -78,13 +76,13 @@ public class App {
                         String value = values[col].trim();
 
                         if (value.isEmpty() || value.equals(" ") || value.equals("0")) {
-                            System.out.println("Error: Value at [" + row + "," + col + "] must be between 1-9");
-                            return null;
+                            // System.out.println("Error: Value at [" + row + "," + col + "] must be between 0-9");
+                            // return null;
                         } else {
                             grid[row][col] = Integer.parseInt(value);
 
-                            if (grid[row][col] < 1 || grid[row][col] > 9) {
-                                System.out.println("Error: Value at [" + row + "," + col + "] must be between 1-9");
+                            if (grid[row][col] < 0 || grid[row][col] > 9) {
+                                System.out.println("Error: Value at [" + row + "," + col + "] must be between 0-9");
                                 return null;
                             }
                         }

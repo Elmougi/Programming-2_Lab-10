@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import Controller_Layer.Board.SodokuBoard;
+import Controller_Layer.Checker.Result;
+import Controller_Layer.Checker.SudokuIntVerifier;
 
 public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     // lists with missing values that needs validation
@@ -19,6 +21,7 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     public UnsolvedGameFlyweight(int size, Integer[][] board) {
         super(size, board);
         findMissingValuesData();
+        //System.out.println("Found " + missingCount + " missing values"); //----------------------
     }
 
     private void findMissingValuesData() {
