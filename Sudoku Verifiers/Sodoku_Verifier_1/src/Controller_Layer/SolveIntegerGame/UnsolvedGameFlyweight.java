@@ -1,12 +1,8 @@
 package Controller_Layer.SolveIntegerGame;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import Controller_Layer.Board.SodokuBoard;
-import Controller_Layer.Checker.Result;
-import Controller_Layer.Checker.SudokuIntVerifier;
 
 public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     // lists with missing values that needs validation
@@ -50,7 +46,7 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         return isSolved;
     }
 
-    public void updateSolveStatus(int[] solution) {
+    public void updateSolveStatus(int[] solution) { // part of the observer pattern -> using its spirit
         isSolved = (solution != null);
         if (isSolved) {
             // apply solution to board
@@ -75,7 +71,7 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
 
             threads.add(new Thread(context));
             threads.get(threads.size() - 1).start();
-        }
+        } // if solved no more threads will be created
 
         for (Thread t : threads) {
             try {
