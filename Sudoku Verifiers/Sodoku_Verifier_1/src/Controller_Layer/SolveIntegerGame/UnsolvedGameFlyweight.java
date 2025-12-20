@@ -1,5 +1,6 @@
 package Controller_Layer.SolveIntegerGame;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +17,13 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     // Note: we know that the board is true except for the missing values
     // all lists are synced by index
 
-    private boolean isSolved = false;
+    private boolean isSolved = false; // my observer variable
 
     public UnsolvedGameFlyweight(int size, Integer[][] board) {
         super(size, board);
         findMissingValuesData();
-        //System.out.println("Found " + missingCount + " missing values"); //----------------------
+        // System.out.println("Found " + missingCount + " missing values");
+        // //----------------------
     }
 
     private void findMissingValuesData() {
@@ -48,22 +50,39 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         return isSolved;
     }
 
+    public void updateSolveStatus(int[] solution) {
+        isSolved = (solution != null);
+        if (isSolved) {
+            // apply solution to board
+            for (int i = 0; i < missingCount; i++) {
+                board[rows.get(i)][cols.get(i)] = solution[i];
+            }
+        }
+    }
+
     public int[][] solve() {
         if (rows.size() == 0) {
             isSolved = true;
             return super.getIntBoard();
         }
 
-        int[] valuesToTry = new int[missingCount];
-        for (int i = 0; i < missingCount; i++) {
-            valuesToTry[i] = 1;
+        PermutationIterator permIterator = new PermutationIterator(SIZE, missingCount);
+        ArrayList<Thread> threads = new ArrayList<>();
+
+        while (permIterator.hasNext() && !isSolved) {
+            int[] valuesToTry = permIterator.next();
+            SolutionFlyweightContext context = new SolutionFlyweightContext(this, valuesToTry);
+
+            threads.add(new Thread(context));
+            threads.get(threads.size() - 1).start();
         }
 
-        tryAllPermutations(valuesToTry, 0);
-        // try last permutation when all are maxed out
-        SolutionFlyweightContext context = new SolutionFlyweightContext(this, valuesToTry);
-        if (context.solveBoard()) {
-            isSolved = true;
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         if (isSolved) {
@@ -73,11 +92,11 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         return null; // no solution found
     }
 
-    private void tryAllPermutations(int[] valuesToTry, int position) {
+    // this method have been discarded
+    private void OriginaltryAllPermutations(int[] valuesToTry, int position) {
         SolutionFlyweightContext context = new SolutionFlyweightContext(this, valuesToTry);
-        if (context.solveBoard()) {
+        if (context.solveBoard() != null) {
             isSolved = true;
-            return;
         }
 
         // Base case: we've filled all positions or solved
@@ -91,7 +110,7 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         // trying all values for current position
         for (int value = 1; value <= SIZE; value++) {
             valuesToTry[position] = value;
-            tryAllPermutations(valuesToTry, position + 1); // for each position's value try all values
+            OriginaltryAllPermutations(valuesToTry, position + 1); // for each position's value try all values
 
             // if solved after the last call, stop
             if (isSolved) {
