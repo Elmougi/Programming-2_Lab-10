@@ -33,7 +33,7 @@ public class SolutionFlyweightContext implements Runnable { // trying a possible
             return; // another thread found the solution
         }
 
-        game.updateSolveStatus(solveBoard());
+        game.updateSolveStatus(solveBoard()); // using update method to publish solution
     }
 
     public int[] solveBoard() { // if true, the board in Unsolved game is now solved
