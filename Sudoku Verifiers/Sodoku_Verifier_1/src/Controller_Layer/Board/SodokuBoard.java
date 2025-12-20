@@ -38,4 +38,18 @@ public class SodokuBoard<T> implements Board<T> {
         }
         return sb.toString();
     }
+
+    public int[][] getIntBoard() {
+        if (!(board[0][0] instanceof Integer)) {
+            throw new IllegalStateException("Board type is not Integer");
+        }
+
+        int[][] intBoard = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                intBoard[i][j] = (Integer) board[i][j];
+            }
+        }
+        return intBoard;
+    }
 }
