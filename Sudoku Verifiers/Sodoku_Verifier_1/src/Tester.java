@@ -1,7 +1,5 @@
-import Controller_Layer.Board.SodokuBoard;
 import Controller_Layer.Checker.Result;
 import Controller_Layer.Checker.SudokuIntVerifier;
-import Controller_Layer.CreatingBoards.CreateBoardGames;
 import Controller_Layer.SolveIntegerGame.UnsolvedGameFlyweight;
 
 public class Tester {

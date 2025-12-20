@@ -2,16 +2,41 @@ package Controller_Layer.SolveIntegerGame;
 
 import Controller_Layer.Board.BoardIterator;
 
-public class SolutionFlyweightContext { // trying a possible solution
-    private UnsolvedGameFlyweight game;
-    private int[] valuesToTry;
+public class SolutionFlyweightContext implements Runnable { // trying a possible solution
+    private final UnsolvedGameFlyweight game;
+    private int[] valuesToTry = null;
 
     public SolutionFlyweightContext(UnsolvedGameFlyweight game, int[] valuesToTry) {
         this.game = game;
+        setValuesToTry(valuesToTry);
+    }
+
+    public SolutionFlyweightContext(UnsolvedGameFlyweight game) {
+        this.game = game;
+    }
+
+    public void setValuesToTry(int[] valuesToTry) {
+        if (valuesToTry.length != game.missingCount) {
+            throw new IllegalArgumentException("Values to try length must match missing count");
+        }
+
         this.valuesToTry = valuesToTry;
     }
 
-    public boolean solveBoard() { // if true, the board in Unsolved game is now solved
+    @Override
+    public void run() {
+        if (valuesToTry == null) {
+            throw new IllegalStateException("Values to try not set");
+        }
+
+        if(game.isSolved()) {
+            return; // another thread found the solution
+        }
+
+        game.updateSolveStatus(solveBoard());
+    }
+
+    public int[] solveBoard() { // if true, the board in Unsolved game is now solved
         // to decrease computation, I will just verify the affected rows, cols, boxes
 
         BoardIterator<Integer> colIter = game.columnIterator();
@@ -26,18 +51,17 @@ public class SolutionFlyweightContext { // trying a possible solution
 
             valid = verifyList(rowIter, rowIndex, valuesToTry[i]);
             if (!valid)
-                return false;
+                return null;
 
             valid = verifyList(colIter, colIndex, valuesToTry[i]);
             if (!valid)
-                return false;
+                return null;
 
             valid = verifyList(boxIter, boxIndex, valuesToTry[i]);
             if (!valid)
-                return false;
+                return null;
         }
-        applyValues();
-        return true;
+        return valuesToTry;
     }
 
     private boolean verifyList(BoardIterator<Integer> iterator, int index, int missingValue) {
@@ -54,11 +78,5 @@ public class SolutionFlyweightContext { // trying a possible solution
             seen[val] = true;
         }
         return true;
-    }
-
-    private void applyValues() {
-        for (int i = 0; i < game.missingCount; i++) {
-            game.board[game.rows.get(i)][game.cols.get(i)] = valuesToTry[i];
-        }
     }
 }
