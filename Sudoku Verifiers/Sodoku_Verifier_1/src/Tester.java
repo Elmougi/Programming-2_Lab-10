@@ -1,7 +1,5 @@
-import Controller_Layer.Board.SodokuBoard;
 import Controller_Layer.Checker.Result;
 import Controller_Layer.Checker.SudokuIntVerifier;
-import Controller_Layer.CreatingBoards.CreateBoardGames;
 import Controller_Layer.SolveIntegerGame.UnsolvedGameFlyweight;
 
 public class Tester {
@@ -21,7 +19,7 @@ public class Tester {
 
         // CreateBoardGames.creatingBoardGames(sodokuBoard, "valid1.csv");
 
-        // test solve method
+        // test solve funtionality
         String csvFile = "test/incomplete1.csv";
         int[][] board = App.readBoard(csvFile);
         Integer[][] integerBoard = new Integer[board.length][board[0].length];
