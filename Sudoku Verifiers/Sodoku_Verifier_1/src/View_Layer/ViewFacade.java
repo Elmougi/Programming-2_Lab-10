@@ -49,7 +49,13 @@ public class ViewFacade implements Controllable {
     }
 
     @Override
-    public void logUserAction(UserAction userAction) throws IOException {
-        adapter.logUserAction(userAction);
+    public void logUserAction(UserAction userAction) {
+        try{
+            adapter.logUserAction(userAction);
+        } catch (IOException e) {
+            System.out.println("Error logging user action: " + e.getMessage());
+        } catch (Exception e){
+            System.out.println("Unexpected error logging user action: " + e.getMessage());
+        }
     }
 }
