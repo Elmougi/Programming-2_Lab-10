@@ -66,11 +66,60 @@ public class GameController {
     }
 // to be implemented
     public void solveBoard() {
+        if (boardGrid.getEmptyCellCount() != 5) {
+            JOptionPane.showMessageDialog(gameWindow, "Solver is only available when exactly 5 cells are remaining.", "Solver Unavailable", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int[][] currentBoard = boardGrid.getCurrentBoard();
+        boolean[][] validityMap = facadeAdapter.verifyGame(currentBoard);
+
+        if (!checkAllValid(validityMap)) {
+            boardGrid.clearHighlighting();
+            boardGrid.highlightInvalidCells(validityMap);
+            showUserWrongMessage();
+            return;
+        }
+
+        try {
+            int[][] solution = facadeAdapter.solveGame(currentBoard);
+            if (solution != null) {
+                applySolutionToBoard(solution);
+                updateEmptyCellsDisplay();
+                updateSolveButtonState();
+
+                JOptionPane.showMessageDialog(gameWindow, "Puzzle solved! Verifying...", "Solution", JOptionPane.INFORMATION_MESSAGE);
+                try { verifyBoard(); } catch (IOException e) { e.printStackTrace(); }
+            } else {
+                showUserWrongMessage();
+            }
+        } catch (InvalidGame e) {
+            showUserWrongMessage();
+        }
 
     }
 //to be implemented
     public void performUndo() {
+        try {
+            String undoneAction = facadeAdapter.undo();
+            if (undoneAction != null) {
+                String[] parts = undoneAction.split(",");
+                if (parts.length >= 4) {
+                    int row = Integer.parseInt(parts[0]);
+                    int col = Integer.parseInt(parts[1]);
+                    int prevVal = Integer.parseInt(parts[3]);
 
+                    boardGrid.updateCell(row, col, prevVal, new Color(0, 102, 204));
+                    updateEmptyCellsDisplay();
+                    updateSolveButtonState();
+                    gameWindow.updateStatus("Undo Performed");
+                }
+            } else {
+                JOptionPane.showMessageDialog(gameWindow, "No more moves to undo!", "Undo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.err.println("Error performing undo: " + e.getMessage());
+        }
     }
 
     private void logCellChange(int row, int col, int newValue, int oldValue) throws IOException {
@@ -97,6 +146,13 @@ public class GameController {
     }
 // to be implemented
     private void applySolutionToBoard(int[][] solution) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (originalBoard[row][col] == 0) {
+                    boardGrid.updateCell(row, col, solution[row][col], new Color(0, 150, 0));
+                }
+            }
+        }
 
     }
 
