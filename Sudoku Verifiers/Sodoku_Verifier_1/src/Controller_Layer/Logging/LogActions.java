@@ -1,9 +1,8 @@
 package Controller_Layer.Logging;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import Controller_Layer.Game;
 
 public class LogActions {
@@ -14,70 +13,65 @@ public class LogActions {
         this.game = game;
     }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void doAction(String action) {
-        if (action.equalsIgnoreCase("end")) {
-            game.endGame();
-            game.endGame();
-            return;
+        if (action.equalsIgnoreCase("start") || action.equalsIgnoreCase("end")) {
+            return; // We don't strictly log start/end in the file for this logic, only moves
         }
-        if (action.equalsIgnoreCase("undo")) {
-            Undo();
-            return;
-        }
+        if (this.game == null) return;
 
-        String[] parts = action.split(", ");
-        char x = parts[0].charAt(0);
-        char y = parts[1].charAt(0);
-        char val = parts[2].charAt(0);
+        // Requirement: Log immediately
+        logToDisk(action);
+    }
 
-        game.addInput(x - '0', y - '0', val - '0');
-
+    private void logToDisk(String action) {
         try (FileWriter writer = new FileWriter(LOG_FILE_PATH, true)) {
             writer.write(action + "\n");
         } catch (Exception e) {
             System.err.println("Failed to log action: " + e.getMessage());
         }
-
-        System.out.println("Logging action: " + action); // for testing
     }
 
     public String Undo() {
-        String LastAction = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(LOG_FILE_PATH))) {
-            StringBuilder content = new StringBuilder();
+        File logFile = new File(LOG_FILE_PATH);
+        if (!logFile.exists()) return null;
+
+        List<String> lines = new ArrayList<>();
+        String lastLine = null;
+
+        // 1. Read all lines
+        try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (reader.ready()) { // (in other words, if there is more lines to read)
-                    content.append(line).append("\n");
-                } else {
-                    LastAction = line;
+                if (!line.trim().isEmpty()) {
+                    lines.add(line);
                 }
             }
-
-            if (LastAction == null) {
-                System.out.println("No actions to undo.");
-                return null;
-            }
-
-            String[] parts = LastAction.split(", ");
-            char x = parts[0].charAt(0);
-            char y = parts[1].charAt(0);
-            char prev = parts[3].charAt(0);
-
-            game.addInput(x - '0', y - '0', prev - '0');
-
-            try (FileWriter writer = new FileWriter(LOG_FILE_PATH, false)) {
-                writer.write(content.toString());
-            } catch (Exception e) {
-                System.err.println("Failed to update log file after undo: " + e.getMessage());
-            }
-
-            System.out.println("logged undo: " + LastAction); // for testing
-            return LastAction;
-
         } catch (IOException e) {
-            System.err.println("Failed to read log file: " + e.getMessage());
+            System.err.println("Error reading log file: " + e.getMessage());
             return null;
         }
+
+        if (lines.isEmpty()) {
+            return null; // Nothing to undo
+        }
+
+        // 2. Remove last line
+        lastLine = lines.remove(lines.size() - 1);
+
+        // 3. Write back remaining lines
+        try (FileWriter writer = new FileWriter(logFile, false)) {
+            for (String line : lines) {
+                writer.write(line + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error updating log file: " + e.getMessage());
+        }
+
+        // 4. Return the undone action
+        return lastLine;
     }
 }

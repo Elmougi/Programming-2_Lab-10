@@ -1,34 +1,30 @@
 package View_Layer;
 
-import gameExceptions.InvalidGame;
-import gameExceptions.NotFoundException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-
 
 public class SudokuGame extends JFrame {
     private JPanel mainPanel;
-    private JPanel topPanel;
-    private JLabel titleLabel;
-    private JPanel infoPanel;
+    private JPanel topPanel;       // Restored
+    private JLabel titleLabel;     // Restored
+    private JPanel infoPanel;      // Restored
     private JLabel statusLabel;
     private JLabel emptyCellsLabel;
     private JPanel boardPanel;
-    private JPanel controlPanel;
+    private JPanel controlPanel;   // Restored
     private JButton verifyButton;
     private JButton solveButton;
     private JButton undoButton;
     private JButton newGameButton;
 
-    private ViewFacade viewFacade;
+    private FacadeAdapter facadeAdapter;
     private BoardGrid boardGrid;
     private GameController gameController;
 
-    public SudokuGame() {
-        this.viewFacade = new ViewFacade();
+    // Constructor now accepts the shared FacadeAdapter
+    public SudokuGame(FacadeAdapter facadeAdapter) {
+        this.facadeAdapter = facadeAdapter;
 
         setTitle("Sudoku Game");
         setContentPane(mainPanel);
@@ -44,56 +40,34 @@ public class SudokuGame extends JFrame {
         startGame();
     }
 
-    private void initializeComponents() {
+    public SudokuGame() {
+        this(new FacadeAdapter());
+    }
 
+    private void initializeComponents() {
         boardGrid = new BoardGrid();
         boardPanel.setLayout(new BorderLayout());
         boardPanel.add(boardGrid.getPanel(), BorderLayout.CENTER);
 
-
-        gameController = new GameController(viewFacade, boardGrid, this);
+        // Pass the reference to GameController
+        gameController = new GameController(facadeAdapter, boardGrid, this);
     }
 
     private void setupListeners() {
-        verifyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    gameController.verifyBoard();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+        verifyButton.addActionListener(e -> {
+            try {
+                gameController.verifyBoard();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
-
-
-        // not implemented yet
-        solveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameController.solveBoard();
-            }
-        });
-
-
-       // perform undo is not implemented yet
-        undoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameController.performUndo();
-            }
-        });
-
-        newGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startNewGame();
-            }
-        });
+        solveButton.addActionListener(e -> gameController.solveBoard());
+        undoButton.addActionListener(e -> gameController.performUndo());
+        newGameButton.addActionListener(e -> startNewGame());
     }
 
     private void startGame() {
-        StartupDialog dialog = new StartupDialog(this, viewFacade);
+        StartupDialog dialog = new StartupDialog(this, facadeAdapter);
         dialog.setVisible(true);
 
         try {
@@ -102,7 +76,7 @@ public class SudokuGame extends JFrame {
             } else if (dialog.getSelectedDifficulty() != null) {
                 gameController.loadGame(dialog.getSelectedDifficulty().charAt(0));
             } else if (dialog.needsSourceFile()) {
-                FileSelector fileSelector = new FileSelector(this, viewFacade);
+                FileSelector fileSelector = new FileSelector(this, facadeAdapter);
                 if (fileSelector.selectAndGenerateGames()) {
                     char difficulty = fileSelector.selectDifficulty();
                     if (difficulty != 0) {
@@ -111,30 +85,21 @@ public class SudokuGame extends JFrame {
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error starting game: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error starting game: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void startNewGame() {
-        int choice = JOptionPane.showConfirmDialog(this,
-                "Start a new game? Current progress will be lost.",
-                "New Game",
-                JOptionPane.YES_NO_OPTION);
-
+        int choice = JOptionPane.showConfirmDialog(this, "Start a new game? Current progress will be lost.", "New Game", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-            dispose();
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new SudokuGame().setVisible(true);
-                }
-            });
+            restartGame();
         }
     }
 
+    public void restartGame() {
+        dispose();
+        SwingUtilities.invokeLater(() -> new SudokuGame(this.facadeAdapter).setVisible(true));
+    }
 
     public void updateStatus(String status) {
         statusLabel.setText("Status: " + status);
@@ -146,22 +111,5 @@ public class SudokuGame extends JFrame {
 
     public void updateEmptyCells(int count) {
         emptyCellsLabel.setText("Empty cells: " + count);
-    }
-
-
-
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new SudokuGame().setVisible(true);
-            }
-        });
     }
 }

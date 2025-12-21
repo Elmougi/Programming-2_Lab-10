@@ -43,6 +43,7 @@ public interface Viewable {
     void logUserAction(String userAction) throws IOException;
 
     boolean[][] getValidityMap(Game game);
+    String undo() throws IOException;
 
 
     int[][] getSolvedBoard(Game game) throws InvalidGame;

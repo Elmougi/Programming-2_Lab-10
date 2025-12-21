@@ -1,48 +1,32 @@
 package View_Layer;
 
+import gameExceptions.SolutionInvalidException;
 import javax.swing.*;
 import java.io.File;
 
 public class FileSelector {
     private JFrame parent;
-    private ViewFacade viewFacade;
+    private FacadeAdapter facadeAdapter; // Reference
 
-    public FileSelector(JFrame parent, ViewFacade viewFacade) {
+    public FileSelector(JFrame parent, FacadeAdapter facadeAdapter) {
         this.parent = parent;
-        this.viewFacade = viewFacade;
+        this.facadeAdapter = facadeAdapter;
     }
 
     public boolean selectAndGenerateGames() {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select Solved Sudoku File");
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".csv");
-            }
+        fileChooser.setDialogTitle("Select Solved Sudoku CSV");
 
-            @Override
-            public String getDescription() {
-                return "CSV Files (*.csv)";
-            }
-        });
+        int userSelection = fileChooser.showOpenDialog(parent);
 
-        int result = fileChooser.showOpenDialog(parent);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToRead = fileChooser.getSelectedFile();
             try {
-                viewFacade.driveGames(selectedFile.getAbsolutePath());
-                JOptionPane.showMessageDialog(parent,
-                        "Games generated successfully! Please select difficulty.",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
+                facadeAdapter.driveGames(fileToRead.getAbsolutePath());
+                JOptionPane.showMessageDialog(parent, "Games generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 return true;
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(parent,
-                        "Error generating games: " + e.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return false;
+            } catch (SolutionInvalidException e) {
+                JOptionPane.showMessageDialog(parent, "Invalid Solution File: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         return false;
@@ -51,13 +35,11 @@ public class FileSelector {
     public char selectDifficulty() {
         String[] options = {"Easy", "Medium", "Hard"};
         int choice = JOptionPane.showOptionDialog(parent,
-                "Select difficulty:",
+                "Select Difficulty to Play",
                 "Difficulty Selection",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
+                null, options, options[0]);
 
         if (choice == 0) return 'E';
         if (choice == 1) return 'M';

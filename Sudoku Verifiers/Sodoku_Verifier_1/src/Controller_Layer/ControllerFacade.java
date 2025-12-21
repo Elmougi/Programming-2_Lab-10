@@ -7,19 +7,10 @@ import gameExceptions.InvalidGame;
 import gameExceptions.NotFoundException;
 import gameExceptions.SolutionInvalidException;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-/**
- * Main Controller Facade implementing Viewable interface.
- * FACADE DESIGN PATTERN: Delegates to sub-controllers.
- * Follows SOLID: Open/Closed Principle, Single Responsibility.
- */
 public class ControllerFacade implements Viewable {
 
-    // Sub-controllers (Dependency Injection possible)
     private final GameManager gameManager;
     private final GameVerifier gameVerifier;
     private LogActions logger;
@@ -31,13 +22,6 @@ public class ControllerFacade implements Viewable {
         this.logger = new LogActions(currentGame);
     }
 
-    // Constructor for dependency injection (if needed for testing)
-    public ControllerFacade(GameManager gameManager, GameVerifier gameVerifier) {
-        this.gameManager = gameManager;
-        this.gameVerifier = gameVerifier;
-        this.logger = new LogActions(currentGame);
-    }
-
     @Override
     public Catalog getCatalog() {
         return gameManager.getCatalog();
@@ -45,7 +29,22 @@ public class ControllerFacade implements Viewable {
 
     @Override
     public Game getGame(DifficultyEnum level) throws NotFoundException {
-        return gameManager.getGame(level);
+        this.currentGame = gameManager.getGame(level);
+        this.logger.setGame(this.currentGame);
+        return this.currentGame;
+    }
+
+    // Fetches the game with user progress
+    public Game getIncompleteGame() throws NotFoundException {
+        this.currentGame = gameManager.getIncompleteGame();
+        this.logger.setGame(this.currentGame);
+        return this.currentGame;
+    }
+
+    // Fetches the original board (zeros) for the incomplete game
+    public Game getOriginalIncompleteGame() throws NotFoundException {
+        // We don't set this as current game because we just want the reference board
+        return gameManager.getOriginalIncompleteGame();
     }
 
     @Override
@@ -66,6 +65,18 @@ public class ControllerFacade implements Viewable {
     @Override
     public void logUserAction(String userAction) throws IOException {
         logger.doAction(userAction);
+        if (currentGame != null) {
+            gameManager.saveCurrentGame(currentGame);
+        }
+    }
+
+    @Override
+    public String undo() throws IOException {
+        String action = logger.Undo();
+        if (currentGame != null) {
+            gameManager.saveCurrentGame(currentGame);
+        }
+        return action;
     }
 
     @Override
@@ -78,7 +89,9 @@ public class ControllerFacade implements Viewable {
         return gameVerifier.getSolvedBoard(game);
     }
 
-    public Game getCurrentGame() {
-        return currentGame;
+    public void deleteCurrentGame() {
+        gameManager.deleteCurrentGame();
+        this.currentGame = null;
+        this.logger.setGame(null);
     }
 }

@@ -1,18 +1,11 @@
 package View_Layer;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Startup dialog that handles initial game flow:
- * 1. Check for incomplete game
- * 2. Check for available difficulties
- * 3. Prompt for source solution if needed
- */
 public class StartupDialog extends JDialog {
     private JPanel mainPanel;
-    private JLabel titleLabel;
+    private JLabel titleLabel; // Restored field
     private JLabel messageLabel;
     private JPanel buttonPanel;
     private JButton yesButton;
@@ -23,14 +16,15 @@ public class StartupDialog extends JDialog {
     private JButton mediumButton;
     private JButton hardButton;
 
-    private ViewFacade viewFacade;
+    private FacadeAdapter facadeAdapter;
     private String selectedDifficulty = null;
     private boolean shouldLoadIncomplete = false;
     private boolean needsSourceFile = false;
 
-    public StartupDialog(JFrame parent, ViewFacade viewFacade) {
+    // Constructor injection
+    public StartupDialog(JFrame parent, FacadeAdapter facadeAdapter) {
         super(parent, "Sudoku Game Startup", true);
-        this.viewFacade = viewFacade;
+        this.facadeAdapter = facadeAdapter;
 
         setContentPane(mainPanel);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -42,57 +36,32 @@ public class StartupDialog extends JDialog {
     }
 
     private void setupListeners() {
-        yesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shouldLoadIncomplete = true;
-                dispose();
-            }
+        yesButton.addActionListener(e -> {
+            shouldLoadIncomplete = true;
+            dispose();
         });
+        noButton.addActionListener(e -> {
+            shouldLoadIncomplete = false;
+            checkDifficultiesAvailable();
+        });
+        okButton.addActionListener(e -> dispose());
 
-        noButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shouldLoadIncomplete = false;
-                checkDifficultiesAvailable();
-            }
-        });
+        ActionListener diffListener = e -> {
+            JButton source = (JButton) e.getSource();
+            if (source == easyButton) selectedDifficulty = "E";
+            else if (source == mediumButton) selectedDifficulty = "M";
+            else if (source == hardButton) selectedDifficulty = "H";
+            dispose();
+        };
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        easyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedDifficulty = "E";
-                dispose();
-            }
-        });
-
-        mediumButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedDifficulty = "M";
-                dispose();
-            }
-        });
-
-        hardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedDifficulty = "H";
-                dispose();
-            }
-        });
+        easyButton.addActionListener(diffListener);
+        mediumButton.addActionListener(diffListener);
+        hardButton.addActionListener(diffListener);
     }
 
     private void initializeGameFlow() {
         try {
-            boolean[] catalog = viewFacade.getCatalog();
+            boolean[] catalog = facadeAdapter.getCatalog();
             boolean hasIncomplete = catalog[0];
             boolean hasAllDifficulties = catalog[1];
 
@@ -104,10 +73,7 @@ public class StartupDialog extends JDialog {
                 showSourceFilePrompt();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error checking game catalog: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error checking game catalog: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             dispose();
         }
     }
@@ -121,19 +87,14 @@ public class StartupDialog extends JDialog {
 
     private void checkDifficultiesAvailable() {
         try {
-            boolean[] catalog = viewFacade.getCatalog();
-            boolean hasAllDifficulties = catalog[1];
-
-            if (hasAllDifficulties) {
+            boolean[] catalog = facadeAdapter.getCatalog();
+            if (catalog[1]) {
                 showDifficultySelection();
             } else {
                 showSourceFilePrompt();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error checking difficulties: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -150,15 +111,7 @@ public class StartupDialog extends JDialog {
         buttonPanel.setVisible(true);
     }
 
-    public String getSelectedDifficulty() {
-        return selectedDifficulty;
-    }
-
-    public boolean shouldLoadIncomplete() {
-        return shouldLoadIncomplete;
-    }
-
-    public boolean needsSourceFile() {
-        return needsSourceFile;
-    }
+    public String getSelectedDifficulty() { return selectedDifficulty; }
+    public boolean shouldLoadIncomplete() { return shouldLoadIncomplete; }
+    public boolean needsSourceFile() { return needsSourceFile; }
 }
