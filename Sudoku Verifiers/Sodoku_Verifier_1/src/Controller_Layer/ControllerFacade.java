@@ -65,7 +65,7 @@ public class ControllerFacade implements Viewable {
 
     @Override
     public void logUserAction(String userAction) throws IOException {
-        
+        logger.doAction(userAction);
     }
 
     @Override

@@ -31,7 +31,12 @@ public class GameVerifier {
 
         // Convert to SudokuBoard
         Integer[][] integerBoard = convertToIntegerArray(game.board);
-        SodokuBoard<Integer> board = new SodokuBoard<>(9, integerBoard);
+        SodokuBoard<Integer> board;
+        try {
+            board = new SodokuBoard<>(9, integerBoard);
+        } catch (gameExceptions.InvalidGame e) {
+            throw new IllegalStateException("Provided board is not a valid Sudoku board:\n" + e.getMessage());
+        }
 
         // Use BooleanMapAdapter
         BooleanMapAdapter<Integer> adapter = new BooleanMapAdapter<>(board, result);
