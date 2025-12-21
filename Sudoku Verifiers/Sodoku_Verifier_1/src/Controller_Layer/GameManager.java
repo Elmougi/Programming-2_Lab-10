@@ -1,5 +1,6 @@
 package Controller_Layer;
 
+import Controller_Layer.Board.BoardUtility;
 import Controller_Layer.Board.SodokuBoard;
 import Controller_Layer.Checker.Result;
 import Controller_Layer.Checker.SudokuIntVerifier;
@@ -48,7 +49,7 @@ public class GameManager {
         Random rand = new Random();
         File gameFile = files[rand.nextInt(files.length)];
 
-        int[][] board = App.readBoard(gameFile.getPath());
+        int[][] board = BoardUtility.readBoard(gameFile.getPath());
         if (board == null) {
             throw new NotFoundException("Could not load game from: " + gameFile.getPath());
         }
@@ -66,7 +67,7 @@ public class GameManager {
             throw new NotFoundException("No incomplete game found");
         }
 
-        int[][] board = App.readBoard(incompleteFile.getPath());
+        int[][] board = BoardUtility.readBoard(incompleteFile.getPath());
         if (board == null) {
             throw new NotFoundException("Could not load incomplete game");
         }
