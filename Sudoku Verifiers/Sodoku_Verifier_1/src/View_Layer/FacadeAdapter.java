@@ -1,20 +1,21 @@
-package Adapter_Layer;
+package View_Layer;
 
 import Controller_Layer.Board.BoardUtility;
-import Controller_Layer.ControllerFacade;      // ✅ Use ControllerFacade instead
+import Controller_Layer.ControllerFacade;
 import Controller_Layer.Game;
 import Controller_Layer.GameManager;
 import Controller_Layer.Catalog;
 import Controller_Layer.CreatingBoards.DifficultyEnum;
 import Facade_Interfaces.Controllable;
 import Facade_Interfaces.Viewable;
-import View_Layer.UserAction;
 import gameExceptions.*;
 
 import java.io.IOException;
 
 /**
  * FACADE ADAPTER - Adapter Design Pattern
+ * Bridges between View's Controllable interface and Controller's Viewable interface.
+ * Converts data types and formats between the two layers.
  */
 public class FacadeAdapter implements Controllable {
 
@@ -29,19 +30,15 @@ public class FacadeAdapter implements Controllable {
 
     /**
      * Default constructor - creates ControllerFacade.
-     * ✅ Now using ControllerFacade (the correct class name)
      */
     public FacadeAdapter() {
-        this.controller = new ControllerFacade(); // ✅ Fixed!
+        this.controller = new ControllerFacade();
     }
 
     @Override
     public boolean[] getCatalog() {
         Catalog catalog = controller.getCatalog();
-        return new boolean[] {
-                catalog.hasCurrent(),
-                catalog.hasAllModesExist()
-        };
+        return new boolean[] { catalog.hasCurrent(), catalog.hasAllModesExist() };
     }
 
     @Override
@@ -71,28 +68,15 @@ public class FacadeAdapter implements Controllable {
     @Override
     public boolean[][] verifyGame(int[][] game) {
         Game gameObj = new Game(game);
-        controller.verifyGame(gameObj);
-
-        // ✅ Cast to ControllerFacade to access getValidityMap
-        if (controller instanceof ControllerFacade) {
-            return ((ControllerFacade) controller).getValidityMap(gameObj);
-        }
-
-        // Fallback
-        boolean[][] validity = new boolean[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                validity[i][j] = true;
-            }
-        }
-        return validity;
+        // Use the new getValidityMap method from Viewable interface
+        return controller.getValidityMap(gameObj);
     }
 
     @Override
     public int[][] solveGame(int[][] game) throws InvalidGame {
         Game gameObj = new Game(game);
-        int[] solutionEncoded = controller.solveGame(gameObj);
-        return decodeSolution(solutionEncoded, game);
+        // Use the new getSolvedBoard method from Viewable interface
+        return controller.getSolvedBoard(gameObj);
     }
 
     @Override
@@ -101,7 +85,9 @@ public class FacadeAdapter implements Controllable {
         controller.logUserAction(actionString);
     }
 
-    // Helper methods
+    /**
+     * Helper method to convert char difficulty to DifficultyEnum.
+     */
     private DifficultyEnum convertCharToDifficulty(char level) throws NotFoundException {
         switch (level) {
             case 'E':
@@ -116,18 +102,5 @@ public class FacadeAdapter implements Controllable {
             default:
                 throw new NotFoundException("Invalid difficulty: " + level);
         }
-    }
-
-    private int[][] decodeSolution(int[] encoded, int[][] originalBoard) {
-        int[][] solved = new int[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                solved[i][j] = originalBoard[i][j];
-            }
-        }
-        for (int i = 0; i < encoded.length; i += 3) {
-            solved[encoded[i]][encoded[i + 1]] = encoded[i + 2];
-        }
-        return solved;
     }
 }
