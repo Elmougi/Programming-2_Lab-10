@@ -41,4 +41,9 @@ public interface Viewable {
 
     // Logs the user action
     void logUserAction(String userAction) throws IOException;
+
+    boolean[][] getValidityMap(Game game);
+
+
+    int[][] getSolvedBoard(Game game) throws InvalidGame;
 }

@@ -68,11 +68,12 @@ public class ControllerFacade implements Viewable {
         }
     }
 
-    // Additional helper method for View layer (via adapter)
+    @Override
     public boolean[][] getValidityMap(Game game) {
         return gameVerifier.getValidityMap(game);
     }
 
+    @Override
     public int[][] getSolvedBoard(Game game) throws InvalidGame {
         return gameVerifier.getSolvedBoard(game);
     }

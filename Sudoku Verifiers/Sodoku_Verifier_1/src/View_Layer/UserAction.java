@@ -1,5 +1,7 @@
 package View_Layer;
 
+import java.io.IOException;
+
 public class UserAction { // iued in logging
 
     private ViewFacade viewFacade;
@@ -10,7 +12,7 @@ public class UserAction { // iued in logging
     // string for adding a value for an incomplete elemnent = "x,y,val,prev"
     public static final String UNDO = "undo";
 
-    public UserAction() {
+    public UserAction() throws IOException {
         viewFacade = new ViewFacade();
         viewFacade.logUserAction(this.start());
     }

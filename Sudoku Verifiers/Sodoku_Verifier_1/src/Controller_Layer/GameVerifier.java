@@ -10,50 +10,41 @@ import gameExceptions.InvalidGame;
 /**
  * Responsible for game verification and solving.
  * Single Responsibility: Verification and solving operations.
- * REUSES: SudokuIntVerifier, BooleanMapAdapter, UnsolvedGameFlyweight
  */
 public class GameVerifier {
 
     /**
      * Verify a game and return detailed result string.
-     * REUSES: SudokuIntVerifier (existing class)
      */
     public String verifyGame(Game game) {
-        // Use EXISTING SudokuIntVerifier
         SudokuIntVerifier verifier = new SudokuIntVerifier(game.board);
         Result<Integer> result = verifier.verify();
-
-        return result.toString(); // Already formatted!
+        return result.toString();
     }
 
     /**
      * Get boolean map showing which cells are valid/invalid.
-     * REUSES: BooleanMapAdapter (existing class)
      */
     public boolean[][] getValidityMap(Game game) {
-        // Use EXISTING BooleanMapAdapter
         SudokuIntVerifier verifier = new SudokuIntVerifier(game.board);
         Result<Integer> result = verifier.verify();
 
-        // Convert to SodokuBoard
+        // Convert to SudokuBoard
         Integer[][] integerBoard = convertToIntegerArray(game.board);
         SodokuBoard<Integer> board = new SodokuBoard<>(9, integerBoard);
 
-        // Use EXISTING BooleanMapAdapter
+        // Use BooleanMapAdapter
         BooleanMapAdapter<Integer> adapter = new BooleanMapAdapter<>(board, result);
         return adapter.resultMap();
     }
 
     /**
-     * Solve a game and return the solution.
-     * REUSES: UnsolvedGameFlyweight (existing class)
+     * Solve a game and return encoded solution.
      * Returns array encoding: [row, col, value, row, col, value, ...]
      */
     public int[] solveGame(Game game) throws InvalidGame {
-        // Convert to Integer[][]
         Integer[][] integerBoard = convertToIntegerArray(game.board);
 
-        // Use EXISTING UnsolvedGameFlyweight
         UnsolvedGameFlyweight solver = new UnsolvedGameFlyweight(9, integerBoard);
         int[][] solved = solver.solve();
 
@@ -61,28 +52,43 @@ public class GameVerifier {
             throw new InvalidGame("No solution exists for this game");
         }
 
-        // Encode only the missing cells
         return encodeMissingCells(game.board, solved);
     }
 
     /**
      * Get the full solved board.
-     * REUSES: UnsolvedGameFlyweight
+     * Returns complete board with all cells filled.
      */
     public int[][] getSolvedBoard(Game game) throws InvalidGame {
-        Integer[][] integerBoard = convertToIntegerArray(game.board);
+        int[] encoded = solveGame(game);
+        return decodeSolution(encoded, game.board);
+    }
 
-        UnsolvedGameFlyweight solver = new UnsolvedGameFlyweight(9, integerBoard);
-        int[][] solved = solver.solve();
+    /**
+     * Decodes the encoded solution back to a full board.
+     * Business logic - belongs in Controller layer.
+     */
+    private int[][] decodeSolution(int[] encoded, int[][] originalBoard) {
+        int[][] solved = new int[9][9];
 
-        if (solved == null || !solver.isSolved()) {
-            throw new InvalidGame("No solution exists for this game");
+        // Copy original board
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                solved[i][j] = originalBoard[i][j];
+            }
+        }
+
+        // Fill in the missing cells
+        for (int i = 0; i < encoded.length; i += 3) {
+            solved[encoded[i]][encoded[i + 1]] = encoded[i + 2];
         }
 
         return solved;
     }
 
-    // Helper methods
+    /**
+     * Convert int[][] to Integer[][] for solver.
+     */
     private Integer[][] convertToIntegerArray(int[][] board) {
         Integer[][] result = new Integer[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
