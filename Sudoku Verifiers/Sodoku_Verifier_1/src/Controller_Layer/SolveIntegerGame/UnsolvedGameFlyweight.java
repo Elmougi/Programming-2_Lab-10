@@ -11,16 +11,14 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     protected List<Integer> rows = new ArrayList<>();
     protected List<Integer> boxes = new ArrayList<>();
     protected int missingCount = 0;
-    // Note: we know that the board is true except for the missing values
-    // all lists are synced by index
 
-    private boolean isSolved = false; // my observer variable
+    // Volatile is generally preferred for visibility, but per constraints "no synchronized/volatile",
+    // we rely on the memory model eventually propagating the change or the thread join visibility.
+    private boolean isSolved = false;
 
     public UnsolvedGameFlyweight(int size, Integer[][] board) throws InvalidGame {
         super(size, board);
         findMissingValuesData();
-        // System.out.println("Found " + missingCount + " missing values");
-        // //----------------------
     }
 
     private void findMissingValuesData() {
@@ -28,10 +26,6 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
             for (int j = 0; j < SIZE; j++) {
                 if (board[i][j] == 0) {
                     missingCount++;
-                    if (missingCount > 5) {
-                        throw new IllegalArgumentException("too many missing values. Max is 5");
-                    }
-
                     rows.add(i);
                     cols.add(j);
                     int boxRow = i / (int) Math.sqrt(SIZE);
@@ -41,16 +35,21 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
                 }
             }
         }
+        // Constraint from PDF: Solver restricted to exactly 5 empty cells
+        if (missingCount > 5) {
+            throw new IllegalArgumentException("Solver is restricted to max 5 missing values. Found: " + missingCount);
+        }
     }
 
     public boolean isSolved() {
         return isSolved;
     }
 
-    public void updateSolveStatus(int[] solution) { // part of the observer pattern -> using its spirit
-        isSolved = (solution != null);
-        if (isSolved) {
-            // apply solution to board
+    public void updateSolveStatus(int[] solution) {
+        // Double check to prevent overwriting if multiple threads succeed simultaneously
+        if (!isSolved && solution != null) {
+            isSolved = true;
+            // Apply solution to the internal board representation
             for (int i = 0; i < missingCount; i++) {
                 board[rows.get(i)][cols.get(i)] = solution[i];
             }
@@ -58,7 +57,7 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     }
 
     public int[][] solve() {
-        if (rows.size() == 0) {
+        if (missingCount == 0) {
             isSolved = true;
             return super.getIntBoard();
         }
@@ -66,14 +65,20 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         PermutationIterator permIterator = new PermutationIterator(SIZE, missingCount);
         ArrayList<Thread> threads = new ArrayList<>();
 
-        while (permIterator.hasNext() && !isSolved) {
+        // Create workers for permutations
+        while (permIterator.hasNext()) {
+            // Optimization: Stop creating threads if solved
+            if (isSolved) break;
+
             int[] valuesToTry = permIterator.next();
             SolutionFlyweightContext context = new SolutionFlyweightContext(this, valuesToTry);
 
-            threads.add(new Thread(context));
-            threads.get(threads.size() - 1).start();
-        } // if solved no more threads will be created
+            Thread t = new Thread(context);
+            threads.add(t);
+            t.start();
+        }
 
+        // Wait for all threads to finish
         for (Thread t : threads) {
             try {
                 t.join();
@@ -86,61 +91,6 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
             return super.getIntBoard();
         }
 
-        return null; // no solution found
+        return null; // No solution found
     }
-
-    // this method have been discarded
-    private void OriginaltryAllPermutations(int[] valuesToTry, int position) {
-        SolutionFlyweightContext context = new SolutionFlyweightContext(this, valuesToTry);
-        if (context.solveBoard() != null) {
-            isSolved = true;
-        }
-
-        // Base case: we've filled all positions or solved
-        if (position == missingCount) {
-            return;
-        }
-        if (isSolved) {
-            return;
-        }
-
-        // trying all values for current position
-        for (int value = 1; value <= SIZE; value++) {
-            valuesToTry[position] = value;
-            OriginaltryAllPermutations(valuesToTry, position + 1); // for each position's value try all values
-
-            // if solved after the last call, stop
-            if (isSolved) {
-                return;
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        // testCounter = 0;
-        // TESTtryAllPermutations(new int[] { 1, 1, 1, 1, 1 }, 0);
-
-        // System.out.println("Done testing permutations. Total tested: " + testCounter
-        // + " out of max " + max);
-    }
-
-    // private static int testCounter = 0;
-    // private static int max = (int) Math.pow(9, 5);
-
-    // private static void TESTtryAllPermutations(int[] valuesToTry, int position) {
-    // testCounter++;
-
-    // // Base case: we've filled all positions or solved
-    // if (position == 5 || testCounter >= max) {
-    // return;
-    // }
-
-    // // trying all values for current position
-    // for (int value = 1; value <= 9; value++) {
-    // valuesToTry[position] = value;
-    // TESTtryAllPermutations(valuesToTry, position + 1); // for each position's
-    // value try all values
-
-    // }
-    // }
 }

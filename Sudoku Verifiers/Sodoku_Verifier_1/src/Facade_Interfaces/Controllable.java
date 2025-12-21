@@ -18,6 +18,8 @@ public interface Controllable {
     // contains the cell x, y and solution for each missing cell
     int[][] solveGame(int[][] game) throws InvalidGame;
 
+    String undo() throws IOException;
+
     // Logs the user action
     void logUserAction(UserAction userAction) throws IOException;
 }

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class UserAction { // iued in logging
 
-    private ViewFacade viewFacade;
+    private FacadeAdapter facadeAdapter;
     private String action;
 
     public static final String START_GAME = "start";
@@ -13,8 +13,8 @@ public class UserAction { // iued in logging
     public static final String UNDO = "undo";
 
     public UserAction() throws IOException {
-        viewFacade = new ViewFacade();
-        viewFacade.logUserAction(this.start());
+        facadeAdapter = new FacadeAdapter();
+        facadeAdapter.logUserAction(this.start());
     }
 
     private UserAction start() {
