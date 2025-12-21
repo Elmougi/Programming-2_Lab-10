@@ -17,21 +17,21 @@ import java.io.IOException;
  * Bridges between View's Controllable interface and Controller's Viewable interface.
  * Converts data types and formats between the two layers.
  */
-public class FacadeAdapter implements Controllable {
+public class ViewFacade implements Controllable {
 
     private final Viewable controller;
 
     /**
      * Constructor with dependency injection.
      */
-    public FacadeAdapter(Viewable controller) {
+    public ViewFacade(Viewable controller) {
         this.controller = controller;
     }
 
     /**
      * Default constructor - creates ControllerFacade.
      */
-    public FacadeAdapter() {
+    public ViewFacade() {
         this.controller = new ControllerFacade();
     }
 
