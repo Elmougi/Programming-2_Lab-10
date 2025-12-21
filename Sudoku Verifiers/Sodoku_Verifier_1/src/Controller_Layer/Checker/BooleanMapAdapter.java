@@ -4,6 +4,7 @@ import java.util.List;
 
 import Controller_Layer.Board.BoardIterator;
 import Controller_Layer.Board.SodokuBoard;
+import gameExceptions.InvalidGame;
 
 public class BooleanMapAdapter<T> { // adapter does not extend another class because it is the unique output itself
     private SodokuBoard<T> board;
@@ -52,7 +53,8 @@ public class BooleanMapAdapter<T> { // adapter does not extend another class bec
                 if (cellValue.equals(value)) {
                     int[] pos = iterator.currentElementIndex();
                     map[pos[0]][pos[1]] = false;
-                    //System.out.println("Marking false at (" + pos[0] + ", " + pos[1] + ") for value " + value);
+                    // System.out.println("Marking false at (" + pos[0] + ", " + pos[1] + ") for
+                    // value " + value);
                 }
             }
         }
@@ -74,18 +76,23 @@ public class BooleanMapAdapter<T> { // adapter does not extend another class bec
     // Debug
     public static void main(String[] args) {
         Integer[][] boardArray = {
-            { 5,3,4,6,7,8,9,1,2 },
-            { 6,7,2,1,9,5,3,4,8 },
-            { 1,9,8,3,4,2,5,6,7 },
-            { 8,5,9,7,6,1,4,2,3 },
-            { 4,2,6,8,5,3,7,9,1 },
-            { 7,1,3,9,2,4,8,5,6 },
-            { 9,6,1,5,3,7,2,8,4 },
-            { 2,8,7,4,1,5,6,3,9 },
-            { 3,4,9,2,8,6,1,7,5 }
+                { 5, 3, 4, 6, 7, 8, 9, 1, 2 },
+                { 6, 7, 2, 1, 9, 5, 3, 4, 8 },
+                { 1, 9, 8, 3, 4, 2, 5, 6, 7 },
+                { 8, 5, 9, 7, 6, 1, 4, 2, 3 },
+                { 4, 2, 6, 8, 5, 3, 7, 9, 1 },
+                { 7, 1, 3, 9, 2, 4, 8, 5, 6 },
+                { 9, 6, 1, 5, 3, 7, 2, 8, 4 },
+                { 2, 8, 7, 4, 1, 5, 6, 3, 9 },
+                { 3, 4, 9, 2, 8, 6, 1, 7, 5 }
         };
 
-        SodokuBoard<Integer> board = new SodokuBoard<>(9, boardArray);
+        SodokuBoard<Integer> board = null;
+        try {
+            board = new SodokuBoard<>(9, boardArray);
+        } catch (InvalidGame e) {
+            System.out.println("Provided board is not a valid Sudoku board:\n" + e.getMessage());
+        }
         SudokuIntegerChecker verifier = new SudokuIntegerChecker(board);
         Result<Integer> result = verifier.getViolations();
         BooleanMapAdapter<Integer> adapter = new BooleanMapAdapter<>(board, result);

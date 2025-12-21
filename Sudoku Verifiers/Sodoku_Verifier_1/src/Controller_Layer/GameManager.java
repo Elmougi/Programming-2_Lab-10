@@ -90,7 +90,12 @@ public class GameManager {
 
         // Convert to SodokuBoard for CreateBoardGames
         Integer[][] integerBoard = convertToIntegerArray(sourceGame.board);
-        SodokuBoard<Integer> board = new SodokuBoard<>(9, integerBoard);
+        SodokuBoard<Integer> board;
+        try{
+            board = new SodokuBoard<>(9, integerBoard);
+        } catch (gameExceptions.InvalidGame e) {
+            throw new SolutionInvalidException("Provided board is not a valid Sudoku board:\n" + e.getMessage());
+        }
 
         // Generate using EXISTING CreateBoardGames
         String filename = "generated_" + System.currentTimeMillis() + ".csv";

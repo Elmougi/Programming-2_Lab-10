@@ -1,13 +1,15 @@
 package Controller_Layer.Board;
 
+import gameExceptions.InvalidGame;
+
 public class SodokuBoard<T> implements Board<T> {
     public final T[][] board;
     public final int SIZE;
 
-    public SodokuBoard(int size, T[][] board) {
+    public SodokuBoard(int size, T[][] board) throws InvalidGame {
         this.SIZE = size;
         if (board.length != SIZE || board[0].length != SIZE) {
-            throw new IllegalArgumentException("Board must be " + SIZE + "x" + SIZE + ".");
+            throw new InvalidGame("Board must be " + SIZE + "x" + SIZE + ".");
         }
         this.board = board;
     }
