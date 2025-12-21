@@ -2,10 +2,11 @@ package Controller_Layer.Board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
-public class BoardUtility
-{
+public class BoardUtility {
     public static int[][] readBoard(String filePath) {
         int[][] grid = new int[9][9];
 
@@ -41,7 +42,8 @@ public class BoardUtility
                             }
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Error: Invalid number format at row " + (row + 1) + ", column " + (col + 1));
+                        System.out
+                                .println("Error: Invalid number format at row " + (row + 1) + ", column " + (col + 1));
                         return null;
                     }
                 }
@@ -59,6 +61,38 @@ public class BoardUtility
         } catch (FileNotFoundException e) {
             System.out.println("Error: File not found - " + filePath);
             return null;
+        }
+    }
+
+    public static void saveBoard(int[][] board, String filePath) {
+        final int BOARD_SIZE = board.length;
+        StringBuilder sb = new StringBuilder();
+        boolean[] jTo0 = new boolean[9];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (jTo0[j]) {
+                    sb.append("0,");
+                    jTo0[j] = false;
+                } else {
+                    sb.append(board[i][j]).append(",");
+                }
+            }
+            sb.append("\n");
+        }
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write(sb.toString());
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing the board to file: " + e.getMessage());
+        }
+    }
+
+    public static void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.delete()) {
+            System.out.println("Deleted the file: " + file.getName());
+        } else {
+            System.out.println("Failed to delete the file: " + file.getName());
         }
     }
 }

@@ -1,6 +1,7 @@
 package Controller_Layer;
 
 import Controller_Layer.CreatingBoards.DifficultyEnum;
+import Controller_Layer.Logging.LogActions;
 import Facade_Interfaces.Viewable;
 import gameExceptions.InvalidGame;
 import gameExceptions.NotFoundException;
@@ -21,16 +22,20 @@ public class ControllerFacade implements Viewable {
     // Sub-controllers (Dependency Injection possible)
     private final GameManager gameManager;
     private final GameVerifier gameVerifier;
+    private LogActions logger;
+    private Game currentGame;
 
     public ControllerFacade() {
         this.gameManager = new GameManager();
         this.gameVerifier = new GameVerifier();
+        this.logger = new LogActions(currentGame);
     }
 
     // Constructor for dependency injection (if needed for testing)
     public ControllerFacade(GameManager gameManager, GameVerifier gameVerifier) {
         this.gameManager = gameManager;
         this.gameVerifier = gameVerifier;
+        this.logger = new LogActions(currentGame);
     }
 
     @Override
@@ -60,12 +65,7 @@ public class ControllerFacade implements Viewable {
 
     @Override
     public void logUserAction(String userAction) throws IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timestamp = sdf.format(new Date());
-
-        try (FileWriter writer = new FileWriter("game.log", true)) {
-            writer.write("[" + timestamp + "] " + userAction + "\n");
-        }
+        logger.doAction(userAction);
     }
 
     @Override
@@ -76,5 +76,9 @@ public class ControllerFacade implements Viewable {
     @Override
     public int[][] getSolvedBoard(Game game) throws InvalidGame {
         return gameVerifier.getSolvedBoard(game);
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
     }
 }

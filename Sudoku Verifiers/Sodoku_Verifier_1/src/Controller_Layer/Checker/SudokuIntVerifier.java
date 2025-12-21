@@ -1,6 +1,7 @@
 package Controller_Layer.Checker;
 
 import Controller_Layer.Board.SodokuBoard;
+import gameExceptions.InvalidGame;
 
 public class SudokuIntVerifier {
     protected Integer[][] board;
@@ -27,7 +28,12 @@ public class SudokuIntVerifier {
     }
 
     public Result<Integer> verify() {
-        SodokuBoard<Integer> sodokuBoard = new SodokuBoard<>(9, board);
+        SodokuBoard<Integer> sodokuBoard = null;
+        try {
+            sodokuBoard = new SodokuBoard<>(9, board);
+        } catch (InvalidGame e) {
+            System.out.println("Provided board is not a valid Sudoku board:\n" + e.getMessage());
+        }
         SudokuIntegerChecker checker = new SudokuIntegerChecker(sodokuBoard);
         return checker.getViolations();
     }

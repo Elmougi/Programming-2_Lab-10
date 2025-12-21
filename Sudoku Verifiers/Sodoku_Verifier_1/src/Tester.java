@@ -1,9 +1,10 @@
 import Controller_Layer.Checker.Result;
 import Controller_Layer.Checker.SudokuIntVerifier;
 import Controller_Layer.SolveIntegerGame.UnsolvedGameFlyweight;
+import gameExceptions.InvalidGame;
 
 public class Tester {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidGame {
         // String csvFile = "test/valid1.csv";
         // int[][] board = App.readBoard(csvFile);
 
