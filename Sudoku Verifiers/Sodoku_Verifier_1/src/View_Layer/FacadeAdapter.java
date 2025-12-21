@@ -3,7 +3,6 @@ package View_Layer;
 import Controller_Layer.Board.BoardUtility;
 import Controller_Layer.ControllerFacade;
 import Controller_Layer.Game;
-import Controller_Layer.GameManager;
 import Controller_Layer.Catalog;
 import Controller_Layer.CreatingBoards.DifficultyEnum;
 import Facade_Interfaces.Controllable;
@@ -12,26 +11,21 @@ import gameExceptions.*;
 
 import java.io.IOException;
 
-/**
- * FACADE ADAPTER - Adapter Design Pattern
- * Bridges between View's Controllable interface and Controller's Viewable interface.
- * Converts data types and formats between the two layers.
- */
-public class ViewFacade implements Controllable {
+public class FacadeAdapter implements Controllable {
 
-    private final Viewable controller;
+    private final ControllerFacade controller;
 
-    /**
-     * Constructor with dependency injection.
-     */
-    public ViewFacade(Viewable controller) {
-        this.controller = controller;
+    // Allow passing an existing controller (Dependency Injection)
+    public FacadeAdapter(Viewable controller) {
+        if (controller instanceof ControllerFacade) {
+            this.controller = (ControllerFacade) controller;
+        } else {
+            this.controller = new ControllerFacade();
+        }
     }
 
-    /**
-     * Default constructor - creates ControllerFacade.
-     */
-    public ViewFacade() {
+    // Default constructor creates the single ControllerFacade instance
+    public FacadeAdapter() {
         this.controller = new ControllerFacade();
     }
 
@@ -43,9 +37,15 @@ public class ViewFacade implements Controllable {
 
     @Override
     public int[][] getGame(char level) throws NotFoundException {
+        // 'I' = Incomplete Game (Current State with User Input)
         if (level == 'I' || level == 'i') {
-            GameManager gameManager = new GameManager();
-            Game game = gameManager.getIncompleteGame();
+            Game game = controller.getIncompleteGame();
+            return game.board;
+        }
+
+        // 'O' = Original Incomplete Game (Clean State with Zeros)
+        if (level == 'O' || level == 'o') {
+            Game game = controller.getOriginalIncompleteGame();
             return game.board;
         }
 
@@ -68,14 +68,12 @@ public class ViewFacade implements Controllable {
     @Override
     public boolean[][] verifyGame(int[][] game) {
         Game gameObj = new Game(game);
-        // Use the new getValidityMap method from Viewable interface
         return controller.getValidityMap(gameObj);
     }
 
     @Override
     public int[][] solveGame(int[][] game) throws InvalidGame {
         Game gameObj = new Game(game);
-        // Use the new getSolvedBoard method from Viewable interface
         return controller.getSolvedBoard(gameObj);
     }
 
@@ -85,22 +83,21 @@ public class ViewFacade implements Controllable {
         controller.logUserAction(actionString);
     }
 
-    /**
-     * Helper method to convert char difficulty to DifficultyEnum.
-     */
+    @Override
+    public String undo() throws IOException {
+        return controller.undo();
+    }
+
+    public void gameSolved() {
+        controller.deleteCurrentGame();
+    }
+
     private DifficultyEnum convertCharToDifficulty(char level) throws NotFoundException {
         switch (level) {
-            case 'E':
-            case 'e':
-                return DifficultyEnum.easy;
-            case 'M':
-            case 'm':
-                return DifficultyEnum.medium;
-            case 'H':
-            case 'h':
-                return DifficultyEnum.hard;
-            default:
-                throw new NotFoundException("Invalid difficulty: " + level);
+            case 'E': case 'e': return DifficultyEnum.easy;
+            case 'M': case 'm': return DifficultyEnum.medium;
+            case 'H': case 'h': return DifficultyEnum.hard;
+            default: throw new NotFoundException("Invalid difficulty: " + level);
         }
     }
 }
