@@ -34,16 +34,13 @@ public class ControllerFacade implements Viewable {
         return this.currentGame;
     }
 
-    // Fetches the game with user progress
     public Game getIncompleteGame() throws NotFoundException {
         this.currentGame = gameManager.getIncompleteGame();
         this.logger.setGame(this.currentGame);
         return this.currentGame;
     }
 
-    // Fetches the original board (zeros) for the incomplete game
     public Game getOriginalIncompleteGame() throws NotFoundException {
-        // We don't set this as current game because we just want the reference board
         return gameManager.getOriginalIncompleteGame();
     }
 
@@ -89,9 +86,20 @@ public class ControllerFacade implements Viewable {
         return gameVerifier.getSolvedBoard(game);
     }
 
+    // Called when the user exits the game
     public void deleteCurrentGame() {
-        gameManager.deleteCurrentGame();
+        gameManager.deleteCurrentGame(null);
         this.currentGame = null;
         this.logger.setGame(null);
+    }
+
+
+    public void gameSolved() {
+        if (this.currentGame != null) {
+            this.currentGame.setComplete(true);
+            gameManager.deleteCurrentGame(this.currentGame);
+            this.currentGame = null;
+            this.logger.setGame(null);
+        }
     }
 }

@@ -16,20 +16,13 @@ public class Main {
         System.out.println("Starting application...");
 
         ensureDirectoryStructure();
-
-        // 1. Create the Single Instance of FacadeAdapter
         FacadeAdapter facadeAdapter = new FacadeAdapter();
-
-        // 2. Test it
         testBackendConnection(facadeAdapter);
-
-        // 3. Pass it to the GUI
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     System.out.println("Launching GUI...");
-                    // Pass the reference!
                     SudokuGame game = new SudokuGame(facadeAdapter);
                     game.setVisible(true);
                     System.out.println("GUI launched successfully!");
@@ -56,8 +49,6 @@ public class Main {
             }
         }
     }
-
-    // Pass reference here too
     private static void testBackendConnection(FacadeAdapter facade) {
         System.out.println("\nTesting backend connection...");
         try {

@@ -1,20 +1,18 @@
 package Controller_Layer;
 
-import Controller_Layer.Board.Board;
 import Controller_Layer.Board.BoardUtility;
 import Controller_Layer.CreatingBoards.DifficultyEnum;
 import Controller_Layer.Logging.LogActions;
 
 public class Game {
-    public int[][] board; // Public as per existing code style
+    public int[][] board;
     private DifficultyEnum difficulty;
     private boolean isComplete;
+    private String sourceFilename;
 
-    private final String Game_File_PATH = "AppData/current/game.csv";
+    private final String CURRENT_FOLDER_PATH = "AppData/current/";
 
     public Game(int[][] board) {
-        // IMPORTANT: DON'T COPY THE BOARD BY VALUE
-        // USE REFERENCES
         this.board = board;
         this.difficulty = null;
         this.isComplete = false;
@@ -26,7 +24,7 @@ public class Game {
         this.isComplete = false;
     }
 
-    // Getters and Setters
+
     public DifficultyEnum getDifficulty() {
         return difficulty;
     }
@@ -47,13 +45,23 @@ public class Game {
         return board;
     }
 
+    public String getSourceFilename() {
+        return sourceFilename;
+    }
+
+    public void setSourceFilename(String sourceFilename) {
+        this.sourceFilename = sourceFilename;
+    }
+
     public void addInput(int x, int y, int val) {
         this.board[x][y] = val;
-        BoardUtility.saveBoard(board, Game_File_PATH);
+
+        if (sourceFilename != null) {
+            BoardUtility.saveBoard(board, CURRENT_FOLDER_PATH + sourceFilename);
+        }
     }
 
     public void endGame() {
         BoardUtility.deleteFile(LogActions.LOG_FILE_PATH);
-
     }
 }

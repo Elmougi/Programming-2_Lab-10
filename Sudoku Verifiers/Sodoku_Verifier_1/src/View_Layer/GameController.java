@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class GameController {
-    private FacadeAdapter facadeAdapter; // Use Reference
+    private FacadeAdapter facadeAdapter;
     private BoardGrid boardGrid;
     private SudokuGame gameWindow;
     private int[][] originalBoard;
@@ -59,13 +59,15 @@ public class GameController {
             facadeAdapter.gameSolved();
             gameWindow.restartGame();
         } else if (allValid) {
-            JOptionPane.showMessageDialog(gameWindow, "Board is valid so far.", "Valid", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(gameWindow, "Board is valid so far., Keep Up the good work", "Valid", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(gameWindow, "Invalid entries detected.", "Invalid", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(gameWindow, "Invalid entries detected. Are highlighted in red", "Invalid", JOptionPane.WARNING_MESSAGE);
         }
     }
-// to be implemented
+
+
     public void solveBoard() {
+
         if (boardGrid.getEmptyCellCount() != 5) {
             JOptionPane.showMessageDialog(gameWindow, "Solver is only available when exactly 5 cells are remaining.", "Solver Unavailable", JOptionPane.WARNING_MESSAGE);
             return;
@@ -74,6 +76,7 @@ public class GameController {
         int[][] currentBoard = boardGrid.getCurrentBoard();
         boolean[][] validityMap = facadeAdapter.verifyGame(currentBoard);
 
+
         if (!checkAllValid(validityMap)) {
             boardGrid.clearHighlighting();
             boardGrid.highlightInvalidCells(validityMap);
@@ -81,24 +84,49 @@ public class GameController {
             return;
         }
 
-        try {
-            int[][] solution = facadeAdapter.solveGame(currentBoard);
-            if (solution != null) {
-                applySolutionToBoard(solution);
-                updateEmptyCellsDisplay();
-                updateSolveButtonState();
 
-                JOptionPane.showMessageDialog(gameWindow, "Puzzle solved! Verifying...", "Solution", JOptionPane.INFORMATION_MESSAGE);
-                try { verifyBoard(); } catch (IOException e) { e.printStackTrace(); }
-            } else {
-                showUserWrongMessage();
+        SwingWorker<int[][], Void> worker = new SwingWorker<>() {
+            @Override
+            protected int[][] doInBackground() throws Exception {
+
+                return facadeAdapter.solveGame(currentBoard);
             }
-        } catch (InvalidGame e) {
-            showUserWrongMessage();
-        }
 
+            @Override
+            protected void done() {
+
+                gameWindow.hideLoading();
+                try {
+                    int[][] solution = get();
+                    if (solution != null) {
+                        applySolutionToBoard(solution);
+                        updateEmptyCellsDisplay();
+                        updateSolveButtonState();
+
+                        JOptionPane.showMessageDialog(gameWindow, "Puzzle solved! Next time try to solve it yourself :)", "Solution", JOptionPane.INFORMATION_MESSAGE);
+                        try { verifyBoard(); } catch (IOException e) { e.printStackTrace(); }
+                    } else {
+                        showUserWrongMessage();
+                    }
+                } catch (Exception e) {
+
+                    Throwable cause = e.getCause();
+                    if (cause instanceof InvalidGame) {
+                        showUserWrongMessage();
+                    } else {
+                        JOptionPane.showMessageDialog(gameWindow, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
+
+        worker.execute();
+        gameWindow.showLoading();
     }
-//to be implemented
+
+
     public void performUndo() {
         try {
             String undoneAction = facadeAdapter.undo();
@@ -127,7 +155,6 @@ public class GameController {
         facadeAdapter.logUserAction(action);
     }
 
-
     private void updateEmptyCellsDisplay() {
         gameWindow.updateEmptyCells(boardGrid.getEmptyCellCount());
     }
@@ -144,7 +171,7 @@ public class GameController {
         }
         return true;
     }
-// to be implemented
+
     private void applySolutionToBoard(int[][] solution) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
@@ -153,7 +180,6 @@ public class GameController {
                 }
             }
         }
-
     }
 
     private void showSuccessMessage() {
@@ -161,7 +187,7 @@ public class GameController {
     }
 
     private void showUserWrongMessage() {
-        JOptionPane.showMessageDialog(gameWindow, "The solver has solved the five remaining cells, \nbut the cells you entered were wrong.\nGo solve them correctly.", "Incorrect Solution", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(gameWindow, "The cells you entered were wrong.\nGo solve them correctly and come back to try the solver again.", "Incorrect Solution", JOptionPane.ERROR_MESSAGE);
     }
 
     private int[][] copyBoard(int[][] board) {

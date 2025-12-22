@@ -21,7 +21,7 @@ public class StartupDialog extends JDialog {
     private boolean shouldLoadIncomplete = false;
     private boolean needsSourceFile = false;
 
-    // Constructor injection
+
     public StartupDialog(JFrame parent, FacadeAdapter facadeAdapter) {
         super(parent, "Sudoku Game Startup", true);
         this.facadeAdapter = facadeAdapter;

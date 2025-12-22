@@ -46,10 +46,8 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
     }
 
     public void updateSolveStatus(int[] solution) {
-        // Double check to prevent overwriting if multiple threads succeed simultaneously
         if (!isSolved && solution != null) {
             isSolved = true;
-            // Apply solution to the internal board representation
             for (int i = 0; i < missingCount; i++) {
                 board[rows.get(i)][cols.get(i)] = solution[i];
             }
@@ -65,9 +63,8 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         PermutationIterator permIterator = new PermutationIterator(SIZE, missingCount);
         ArrayList<Thread> threads = new ArrayList<>();
 
-        // Create workers for permutations
+
         while (permIterator.hasNext()) {
-            // Optimization: Stop creating threads if solved
             if (isSolved) break;
 
             int[] valuesToTry = permIterator.next();
@@ -78,7 +75,6 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
             t.start();
         }
 
-        // Wait for all threads to finish
         for (Thread t : threads) {
             try {
                 t.join();
@@ -90,7 +86,6 @@ public class UnsolvedGameFlyweight extends SodokuBoard<Integer> {
         if (isSolved) {
             return super.getIntBoard();
         }
-
-        return null; // No solution found
+        return null;
     }
 }

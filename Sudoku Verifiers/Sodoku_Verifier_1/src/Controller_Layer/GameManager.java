@@ -19,8 +19,7 @@ import java.util.Random;
 public class GameManager {
     private static final String APPDATA_PATH = "AppData/";
     private static final String CURRENT_PATH = "AppData/current/";
-    private static final String INCOMPLETE_FILE = CURRENT_PATH + "incomplete.csv";
-    private static final String LOG_FILE = CURRENT_PATH + "logs.txt";
+    private static final String LOG_FILE = "CURRENT_PATH "+ "logs.txt";
 
     public Catalog getCatalog() {
         boolean hasCurrent = checkIncompleteGameExists();
@@ -29,7 +28,7 @@ public class GameManager {
     }
 
     public Game getGame(DifficultyEnum level) throws NotFoundException {
-        // 1. Find a random game template
+
         String difficultyPath = APPDATA_PATH + level.name() + "/";
         File folder = new File(difficultyPath);
 
@@ -50,57 +49,76 @@ public class GameManager {
             throw new NotFoundException("Could not load game from: " + gameFile.getPath());
         }
 
-        // 2. Setup "Incomplete" state
-        // STRICT RULE: Folder must be empty or contain exactly two files.
-        // We clean it first to ensure we are starting fresh.
+
         cleanCurrentFolder();
 
         try {
-            // Create the Base Game File
-            saveBoardToCsv(board, INCOMPLETE_FILE);
-            // Create the Empty Log File
+            saveBoardToCsv(board, CURRENT_PATH + gameFile.getName());
             new File(LOG_FILE).createNewFile();
         } catch (IOException e) {
             System.err.println("Warning: Could not save initial incomplete state: " + e.getMessage());
         }
 
-        return new Game(board, level);
+        Game game = new Game(board, level);
+        game.setSourceFilename(gameFile.getName());
+        return game;
     }
 
     public Game getIncompleteGame() throws NotFoundException {
-        File incompleteFile = new File(INCOMPLETE_FILE);
-        if (!incompleteFile.exists()) {
+        File folder = new File(CURRENT_PATH);
+        if (!folder.exists()) throw new NotFoundException("No incomplete game found");
+
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+        if (files == null || files.length == 0) {
             throw new NotFoundException("No incomplete game found");
         }
 
-        // 1. Load the base board (the state at the start of the game)
+        File incompleteFile = files[0];
+
+
         int[][] board = BoardUtility.readBoard(incompleteFile.getPath());
         if (board == null) {
             throw new NotFoundException("Could not load incomplete game");
         }
 
-        // 2. Apply all moves from the log file to restore current state
+
         applyLogsToBoard(board);
 
-        return new Game(board);
+        Game game = new Game(board);
+        game.setSourceFilename(incompleteFile.getName()); // Restore reference to source name
+        return game;
     }
 
     public Game getOriginalIncompleteGame() throws NotFoundException {
-        File incompleteFile = new File(INCOMPLETE_FILE);
-        if (!incompleteFile.exists()) throw new NotFoundException("No incomplete game found");
-        int[][] board = BoardUtility.readBoard(incompleteFile.getPath());
+        File folder = new File(CURRENT_PATH);
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+        if (files == null || files.length == 0) throw new NotFoundException("No incomplete game found");
+
+        int[][] board = BoardUtility.readBoard(files[0].getPath());
         return new Game(board);
     }
 
-    // Called whenever a move is made - We do NOT overwrite incomplete.csv
-    // The state is persisted purely via the log file.
     public void saveCurrentGame(Game game) {
-        // No-op for incomplete.csv to preserve the "Two Files" rule strictness.
         // Logs are written immediately by LogActions.
+        // We do not overwrite the CSV here to maintain the "Base + Logs" structure.
     }
 
-    // Called when game is solved/finished
-    public void deleteCurrentGame() {
+    public void deleteCurrentGame(Game game) {
+
+        if (game != null && game.isComplete() && game.getSourceFilename() != null) {
+            String filename = game.getSourceFilename();
+
+
+            for (DifficultyEnum diff : DifficultyEnum.values()) {
+                File fileToDelete = new File(APPDATA_PATH + diff.name() + "/" + filename);
+                if (fileToDelete.exists()) {
+                    boolean deleted = fileToDelete.delete();
+                    if (deleted) {
+                        System.out.println("Permanently deleted solved game: " + fileToDelete.getPath());
+                    }
+                }
+            }
+        }
         cleanCurrentFolder();
     }
 
@@ -127,7 +145,6 @@ public class GameManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Format: x,y,val,prev
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(",");
                 if (parts.length >= 3) {
@@ -144,7 +161,6 @@ public class GameManager {
         }
     }
 
-    // ... (Other helper methods remain unchanged)
     public void driveGames(Game sourceGame) throws SolutionInvalidException {
         SudokuIntVerifier verifier = new SudokuIntVerifier(sourceGame.board);
         Result<Integer> result = verifier.verify();
@@ -162,8 +178,12 @@ public class GameManager {
     }
 
     private boolean checkIncompleteGameExists() {
-        return new File(INCOMPLETE_FILE).exists();
+        File folder = new File(CURRENT_PATH);
+        if (!folder.exists()) return false;
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+        return files != null && files.length > 0;
     }
+
     private boolean checkAllDifficultiesExist() {
         for (DifficultyEnum diff : DifficultyEnum.values()) {
             String path = APPDATA_PATH + diff.name() + "/";
@@ -172,6 +192,7 @@ public class GameManager {
         }
         return true;
     }
+
     private Integer[][] convertToIntegerArray(int[][] board) {
         Integer[][] result = new Integer[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
@@ -181,6 +202,7 @@ public class GameManager {
         }
         return result;
     }
+
     private void saveBoardToCsv(int[][] board, String path) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int[] row : board) {
