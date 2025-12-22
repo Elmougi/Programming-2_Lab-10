@@ -22,8 +22,6 @@ public class LogActions {
             return; // We don't strictly log start/end in the file for this logic, only moves
         }
         if (this.game == null) return;
-
-        // Requirement: Log immediately
         logToDisk(action);
     }
 
@@ -42,7 +40,7 @@ public class LogActions {
         List<String> lines = new ArrayList<>();
         String lastLine = null;
 
-        // 1. Read all lines
+
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -59,10 +57,10 @@ public class LogActions {
             return null; // Nothing to undo
         }
 
-        // 2. Remove last line
+
         lastLine = lines.remove(lines.size() - 1);
 
-        // 3. Write back remaining lines
+
         try (FileWriter writer = new FileWriter(logFile, false)) {
             for (String line : lines) {
                 writer.write(line + "\n");
@@ -71,7 +69,6 @@ public class LogActions {
             System.err.println("Error updating log file: " + e.getMessage());
         }
 
-        // 4. Return the undone action
         return lastLine;
     }
 }

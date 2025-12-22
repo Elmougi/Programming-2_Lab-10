@@ -33,7 +33,7 @@ public class BoardGrid {
                 cell.setHorizontalAlignment(JTextField.CENTER);
                 cell.setFont(new Font("Arial", Font.BOLD, 24));
 
-                // Add thicker borders for 3x3 boxes
+
                 int top = (i % 3 == 0) ? 3 : 1;
                 int left = (j % 3 == 0) ? 3 : 1;
                 int bottom = (i == 8) ? 3 : 1;

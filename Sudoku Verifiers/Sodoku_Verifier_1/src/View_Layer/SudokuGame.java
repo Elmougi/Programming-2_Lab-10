@@ -2,17 +2,16 @@ package View_Layer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class SudokuGame extends JFrame {
     private JPanel mainPanel;
-    private JPanel topPanel;       // Restored
-    private JLabel titleLabel;     // Restored
-    private JPanel infoPanel;      // Restored
+    private JPanel topPanel;
+    private JLabel titleLabel;
+    private JPanel infoPanel;
     private JLabel statusLabel;
     private JLabel emptyCellsLabel;
     private JPanel boardPanel;
-    private JPanel controlPanel;   // Restored
+    private JPanel controlPanel;
     private JButton verifyButton;
     private JButton solveButton;
     private JButton undoButton;
@@ -21,8 +20,8 @@ public class SudokuGame extends JFrame {
     private FacadeAdapter facadeAdapter;
     private BoardGrid boardGrid;
     private GameController gameController;
+    private JDialog loadingDialog; // New Loading Dialog
 
-    // Constructor now accepts the shared FacadeAdapter
     public SudokuGame(FacadeAdapter facadeAdapter) {
         this.facadeAdapter = facadeAdapter;
 
@@ -32,6 +31,7 @@ public class SudokuGame extends JFrame {
 
         initializeComponents();
         setupListeners();
+        createLoadingDialog();
 
         pack();
         setLocationRelativeTo(null);
@@ -48,10 +48,37 @@ public class SudokuGame extends JFrame {
         boardGrid = new BoardGrid();
         boardPanel.setLayout(new BorderLayout());
         boardPanel.add(boardGrid.getPanel(), BorderLayout.CENTER);
-
-        // Pass the reference to GameController
         gameController = new GameController(facadeAdapter, boardGrid, this);
     }
+
+    // Create Loading Dialog
+    private void createLoadingDialog() {
+        loadingDialog = new JDialog(this, "Solver", true); // Modal dialog
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel messageLabel = new JLabel("Solver is running, please wait...", SwingConstants.CENTER);
+        panel.add(messageLabel, BorderLayout.NORTH);
+
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        panel.add(progressBar, BorderLayout.CENTER);
+
+        loadingDialog.add(panel);
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+    }
+
+    public void showLoading() {
+        SwingUtilities.invokeLater(() -> loadingDialog.setVisible(true));
+    }
+
+    public void hideLoading() {
+        if (loadingDialog != null) {
+            loadingDialog.setVisible(false);
+        }
+    }
+
 
     private void setupListeners() {
         verifyButton.addActionListener(e -> {

@@ -15,7 +15,6 @@ public class FacadeAdapter implements Controllable {
 
     private final ControllerFacade controller;
 
-    // Allow passing an existing controller (Dependency Injection)
     public FacadeAdapter(Viewable controller) {
         if (controller instanceof ControllerFacade) {
             this.controller = (ControllerFacade) controller;
@@ -24,7 +23,6 @@ public class FacadeAdapter implements Controllable {
         }
     }
 
-    // Default constructor creates the single ControllerFacade instance
     public FacadeAdapter() {
         this.controller = new ControllerFacade();
     }
@@ -37,13 +35,13 @@ public class FacadeAdapter implements Controllable {
 
     @Override
     public int[][] getGame(char level) throws NotFoundException {
-        // 'I' = Incomplete Game (Current State with User Input)
+
         if (level == 'I' || level == 'i') {
             Game game = controller.getIncompleteGame();
             return game.board;
         }
 
-        // 'O' = Original Incomplete Game (Clean State with Zeros)
+
         if (level == 'O' || level == 'o') {
             Game game = controller.getOriginalIncompleteGame();
             return game.board;
@@ -89,7 +87,7 @@ public class FacadeAdapter implements Controllable {
     }
 
     public void gameSolved() {
-        controller.deleteCurrentGame();
+        controller.gameSolved();
     }
 
     private DifficultyEnum convertCharToDifficulty(char level) throws NotFoundException {

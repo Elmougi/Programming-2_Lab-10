@@ -32,10 +32,7 @@ public class SolutionFlyweightContext implements Runnable {
         }
     }
 
-    /**
-     * Verifies if the current permutation (valuesToTry) forms a valid solution.
-     * Checks against fixed board values and other values in the permutation.
-     */
+
     public int[] solveBoard() {
         Integer[][] board = game.board; // Access the board directly (Flyweight)
 
@@ -44,13 +41,13 @@ public class SolutionFlyweightContext implements Runnable {
             int c = game.cols.get(i);
             int val = valuesToTry[i];
 
-            // 1. Check Row Constraint
+            // Check Row Constraint
             if (!isValidInUnit(r, c, val, true, false)) return null;
 
-            // 2. Check Column Constraint
+            //  Check Column Constraint
             if (!isValidInUnit(r, c, val, false, true)) return null;
 
-            // 3. Check Box Constraint
+            // Check Box Constraint
             if (!isValidInBox(r, c, val)) return null;
         }
 
@@ -89,7 +86,7 @@ public class SolutionFlyweightContext implements Runnable {
         int boxRowStart = (r / 3) * 3;
         int boxColStart = (c / 3) * 3;
 
-        // Check Fixed Board
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 Integer cellValue = game.board[boxRowStart + i][boxColStart + j];
@@ -99,12 +96,12 @@ public class SolutionFlyweightContext implements Runnable {
             }
         }
 
-        // Check Transient Values
+
         for (int j = 0; j < game.missingCount; j++) {
             int otherR = game.rows.get(j);
             int otherC = game.cols.get(j);
 
-            // Check if 'other' is in the same box
+
             if ((otherR / 3) * 3 == boxRowStart && (otherC / 3) * 3 == boxColStart) {
                 if (valuesToTry[j] == val && j != getCurrentIndexFor(r, c)) {
                     return false;
@@ -114,7 +111,7 @@ public class SolutionFlyweightContext implements Runnable {
         return true;
     }
 
-    // Helper to find the index 'i' in valuesToTry for a specific coordinate
+
     private int getCurrentIndexFor(int r, int c) {
         for (int i = 0; i < game.missingCount; i++) {
             if (game.rows.get(i) == r && game.cols.get(i) == c) {
