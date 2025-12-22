@@ -19,7 +19,7 @@ import java.util.Random;
 public class GameManager {
     private static final String APPDATA_PATH = "AppData/";
     private static final String CURRENT_PATH = "AppData/current/";
-    private static final String LOG_FILE = "CURRENT_PATH "+ "logs.txt";
+    private static final String LOG_FILE = CURRENT_PATH + "logs.txt";
 
     public Catalog getCatalog() {
         boolean hasCurrent = checkIncompleteGameExists();
@@ -49,11 +49,11 @@ public class GameManager {
             throw new NotFoundException("Could not load game from: " + gameFile.getPath());
         }
 
-
         cleanCurrentFolder();
 
         try {
-            saveBoardToCsv(board, CURRENT_PATH + gameFile.getName());
+
+            saveBoardToCsv(board, CURRENT_PATH + "incomplete.csv");
             new File(LOG_FILE).createNewFile();
         } catch (IOException e) {
             System.err.println("Warning: Could not save initial incomplete state: " + e.getMessage());
@@ -68,30 +68,28 @@ public class GameManager {
         File folder = new File(CURRENT_PATH);
         if (!folder.exists()) throw new NotFoundException("No incomplete game found");
 
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+
+        File[] files = folder.listFiles((dir, name) -> name.equals("incomplete.csv"));
         if (files == null || files.length == 0) {
             throw new NotFoundException("No incomplete game found");
         }
 
         File incompleteFile = files[0];
 
-
         int[][] board = BoardUtility.readBoard(incompleteFile.getPath());
         if (board == null) {
             throw new NotFoundException("Could not load incomplete game");
         }
 
-
         applyLogsToBoard(board);
 
         Game game = new Game(board);
-        game.setSourceFilename(incompleteFile.getName()); // Restore reference to source name
         return game;
     }
 
     public Game getOriginalIncompleteGame() throws NotFoundException {
         File folder = new File(CURRENT_PATH);
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+        File[] files = folder.listFiles((dir, name) -> name.equals("incomplete.csv"));
         if (files == null || files.length == 0) throw new NotFoundException("No incomplete game found");
 
         int[][] board = BoardUtility.readBoard(files[0].getPath());
@@ -105,16 +103,17 @@ public class GameManager {
 
     public void deleteCurrentGame(Game game) {
 
-        if (game != null && game.isComplete() && game.getSourceFilename() != null) {
-            String filename = game.getSourceFilename();
-
-
+        if (game != null && game.isComplete()) {
             for (DifficultyEnum diff : DifficultyEnum.values()) {
-                File fileToDelete = new File(APPDATA_PATH + diff.name() + "/" + filename);
-                if (fileToDelete.exists()) {
-                    boolean deleted = fileToDelete.delete();
-                    if (deleted) {
-                        System.out.println("Permanently deleted solved game: " + fileToDelete.getPath());
+                File folder = new File(APPDATA_PATH + diff.name() + "/");
+                if (folder.exists() && folder.isDirectory()) {
+                    File[] files = folder.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (f.isFile()) {
+                                f.delete(); // Delete all files in easy/medium/hard
+                            }
+                        }
                     }
                 }
             }
@@ -147,6 +146,7 @@ public class GameManager {
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(",");
+                // Expected format: x, y, val, prev
                 if (parts.length >= 3) {
                     try {
                         int row = Integer.parseInt(parts[0].trim());
@@ -180,7 +180,7 @@ public class GameManager {
     private boolean checkIncompleteGameExists() {
         File folder = new File(CURRENT_PATH);
         if (!folder.exists()) return false;
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".csv"));
+        File[] files = folder.listFiles((dir, name) -> name.equals("incomplete.csv"));
         return files != null && files.length > 0;
     }
 

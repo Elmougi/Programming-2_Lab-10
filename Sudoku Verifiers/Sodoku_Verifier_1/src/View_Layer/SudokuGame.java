@@ -20,7 +20,7 @@ public class SudokuGame extends JFrame {
     private FacadeAdapter facadeAdapter;
     private BoardGrid boardGrid;
     private GameController gameController;
-    private JDialog loadingDialog; // New Loading Dialog
+    private JDialog loadingDialog;
 
     public SudokuGame(FacadeAdapter facadeAdapter) {
         this.facadeAdapter = facadeAdapter;
@@ -51,9 +51,9 @@ public class SudokuGame extends JFrame {
         gameController = new GameController(facadeAdapter, boardGrid, this);
     }
 
-    // Create Loading Dialog
+
     private void createLoadingDialog() {
-        loadingDialog = new JDialog(this, "Solver", true); // Modal dialog
+        loadingDialog = new JDialog(this, "Solver", true);
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -117,7 +117,7 @@ public class SudokuGame extends JFrame {
     }
 
     private void startNewGame() {
-        int choice = JOptionPane.showConfirmDialog(this, "Start a new game? Current progress will be lost.", "New Game", JOptionPane.YES_NO_OPTION);
+        int choice = JOptionPane.showConfirmDialog(this, "You sure want to exit ?", "New Game", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             restartGame();
         }
